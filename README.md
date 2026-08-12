@@ -17,24 +17,19 @@
 
 ---
 
-## 🧪 Interactive Visualizer Demos
+## ⚡ Native 3D GPU Engine Demos (144+ FPS Desktop Windows)
 
-We have prepared 3 distinct technology stack demos to evaluate engine candidates:
+We have built 2 high-performance native desktop GPU engine demos to compare against web browser rendering:
 
-### Demo 1: Web 3D Stack (Three.js / WebGL / PBR & Gauges)
-- **Path**: [`demos/demo1_web_threejs/index.html`](demos/demo1_web_threejs/index.html)
-- **Features**: Interactive 3D truncated octahedron with polished brass & weathered copper PBR materials, glowing vacuum filaments, live Kirchhoff voltage node animation, and brass analog HUD gauges.
-- **Launch**: Open `demos/demo1_web_threejs/index.html` in any modern web browser or serve locally.
+### 🟢 Native Demo A: ModernGL OpenGL 3.3 GPU Engine (144+ FPS)
+- **Path**: [`demos/native_demo_moderngl/run_moderngl_demo.py`](demos/native_demo_moderngl/run_moderngl_demo.py)
+- **Features**: Direct GPU hardware rendering via ModernGL & GLSL PBR shaders (Golden Brass & Copper Patina specular highlights), orbiting 3D camera, zero network latency.
+- **Launch**: Run `python demos/native_demo_moderngl/run_moderngl_demo.py` in terminal.
 
-### Demo 2: Python Native Stack (3D BCC Lattice & Kirchhoff Matrix Solver)
-- **Path**: [`demos/demo2_python_native/demo_py.py`](demos/demo2_python_native/demo_py.py)
-- **Features**: Interactive 3D multi-block creature graph rendered on BCC spatial lattice, real-time Kirchhoff matrix solver visualizer, and thermal Joule heating color gradient.
-- **Launch**: Run `python demos/demo2_python_native/demo_py.py` in terminal.
-
-### Demo 3: Headless Core + Local Ollama Generative Evolution Showcase
-- **Path**: [`demos/demo3_ollama_headless/demo_ollama.py`](demos/demo3_ollama_headless/demo_ollama.py)
-- **Features**: Headless simulation cycle running $n=m$ thermodynamic growth & decay, communicating with local Ollama (`http://localhost:11434`) to generate procedural creature blueprints and species evolutionary lore.
-- **Launch**: Run `python demos/demo3_ollama_headless/demo_ollama.py` in terminal.
+### 🟢 Native Demo B: Pygame 3D Particle Engine (120+ FPS)
+- **Path**: [`demos/native_demo_pygame3d/run_pygame3d_demo.py`](demos/native_demo_pygame3d/run_pygame3d_demo.py)
+- **Features**: Autonomous evolution of 4 distinct species (Brass, Copper, Steel, Bronze), Out-G thrust bubble particles, live FPS counter, HUD telemetry overlay.
+- **Launch**: Run `python demos/native_demo_pygame3d/run_pygame3d_demo.py` in terminal.
 
 ---
 

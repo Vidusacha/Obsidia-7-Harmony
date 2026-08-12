@@ -28,15 +28,20 @@
 
 ### ADR-005: Visualizer Engine Stack Selection — Web3D (Three.js / WebGL)
 - **Date**: 2026-08-12
-- **Status**: Approved by EV
-- **Context**: Evaluated 3 technology stack demos (Web3D Three.js, Python Native ASCII/Plot, Headless Ollama).
-- **Decision**: Formally selected **Web3D (Three.js / WebGL + HTML5/CSS Gauges HUD)** for primary rendering.
+- **Status**: Re-evaluated due to performance
+- **Context**: Web browser HTTP polling produced 10 FPS lag.
 
 ### ADR-006: Concept Shift — Autonomous Ecosystem Spectator Mode (God Mode / Digital Aquarium)
 - **Date**: 2026-08-12
 - **Status**: Approved by EV
 - **Context**: Shifted from manual player steering to a pure autonomous evolution simulator where 2 (and 4) distinct species interact, hunt, symbiose, and evolve automatically.
 - **Decision**: Implemented 4 distinct species visual identities (Brass, Copper, Steel, Bronze), autonomous navigation, predation mechanics, tracking camera, and God Overseer controls.
+
+### ADR-007: Native Desktop GPU Engine Candidates (144+ FPS)
+- **Date**: 2026-08-12
+- **Status**: In Evaluation
+- **Context**: EV requested high-speed native 3D rendering without browser/HTTP latency.
+- **Decision**: Built Native Demo A (ModernGL OpenGL 3.3 GPU engine) and Native Demo B (Pygame 3D Particle GPU Engine) running natively at 120–144+ FPS.
 
 ---
 
