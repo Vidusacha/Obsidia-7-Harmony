@@ -1,0 +1,48 @@
+# Obsidia-7 Harmony — Global Physics & Simulation Configuration
+
+simulation:
+  time_step_sec: 0.1
+  min_body_size: 5
+  max_reboot_cycles: 3
+  doom_clock_years: 3000000
+
+thermodynamics:
+  mutation_chance: 0.10
+  base_maintenance_cost: 1.0
+  turbo_exhaust_leak_rate: 0.25
+  synthesis_charge_threshold: 30.0
+  synthesis_materia_threshold: 10.0
+  decay_charge_threshold: 5.0
+  max_thermal_entropy_limit: 25.0
+
+gas_reactivity_scale:
+  G_minus_minus:
+    reactivity: 10.0
+    energy_output: 25.0
+    thermal_hazard: 8.0
+  G_minus:
+    reactivity: 5.0
+    energy_output: 12.0
+    thermal_hazard: 3.0
+  G_zero:
+    reactivity: 2.5
+    energy_output: 6.0
+    thermal_hazard: 1.0
+  G_plus:
+    reactivity: 1.0
+    energy_output: 2.0
+    thermal_hazard: 0.2
+  G_plus_plus:
+    reactivity: 0.1
+    energy_output: 0.5
+    thermal_hazard: 0.0
+
+kirchhoff_conductance:
+  base_block_conductance: 1.0
+  in_g_conductance: 1.5
+  out_g_conductance: 1.5
+  in_m_conductance: 1.0
+  in_i_conductance: 1.0
+  out_m_conductance: 1.0
+  out_i_conductance: 1.0
+  intake_current_amps: 12.0
