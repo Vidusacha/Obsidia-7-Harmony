@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Obsidia-7 Harmony — Web3D Visualizer & Live Engine Bridge</title>
+    <title>Obsidia-7 Harmony — 3D Thermodynamic Evolution Game</title>
     <style>
         :root {
             --bg-dark: #0a0b0e;
@@ -11,7 +11,7 @@
             --copper-accent: #b87333;
             --cyan-glow: #00f0ff;
             --orange-heat: #ff4500;
-            --panel-bg: rgba(18, 20, 26, 0.88);
+            --panel-bg: rgba(16, 18, 24, 0.90);
         }
         
         * {
@@ -39,7 +39,7 @@
             z-index: 1;
         }
 
-        /* Overlay UI - Riveting-Punk Panel */
+        /* Overlay HUD */
         .hud-overlay {
             position: absolute;
             z-index: 10;
@@ -49,52 +49,68 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding: 20px;
+            padding: 18px;
         }
 
         .header-panel {
             background: var(--panel-bg);
             border: 2px solid var(--brass-gold);
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3), inset 0 0 10px rgba(0, 0, 0, 0.8);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.35), inset 0 0 12px rgba(0, 0, 0, 0.85);
             border-radius: 8px;
-            padding: 15px 25px;
-            max-width: 480px;
+            padding: 14px 20px;
+            max-width: 520px;
             pointer-events: auto;
-            backdrop-filter: blur(8px);
+            backdrop-filter: blur(10px);
         }
 
         .header-panel h1 {
             color: var(--brass-gold);
-            font-size: 1.3rem;
+            font-size: 1.25rem;
             letter-spacing: 2px;
             text-transform: uppercase;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
-        .header-panel p {
-            font-size: 0.82rem;
-            color: #a0aec0;
-            line-height: 1.3;
+        .doom-clock-bar {
+            display: flex;
+            justify-content: space-between;
+            background: rgba(0,0,0,0.6);
+            border: 1px solid var(--copper-accent);
+            border-radius: 4px;
+            padding: 6px 10px;
+            margin-top: 6px;
+            font-size: 0.8rem;
+        }
+
+        .doom-years {
+            color: var(--orange-heat);
+            font-weight: bold;
+            font-family: monospace;
+        }
+
+        .harmony-val {
+            color: var(--cyan-glow);
+            font-weight: bold;
         }
 
         /* Analog Gauges Panel */
         .gauges-container {
             display: flex;
-            gap: 20px;
+            gap: 15px;
             pointer-events: auto;
         }
 
         .gauge-card {
             background: radial-gradient(circle, #1a1d24 0%, #0d0e12 100%);
-            border: 4px solid var(--brass-gold);
+            border: 3px solid var(--brass-gold);
             border-radius: 50%;
-            width: 135px;
-            height: 135px;
+            width: 125px;
+            height: 125px;
             position: relative;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.9), inset 0 0 15px rgba(212,175,55,0.4);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.9), inset 0 0 12px rgba(212,175,55,0.4);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -110,15 +126,15 @@
         }
 
         .gauge-title {
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             color: var(--brass-gold);
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-top: 15px;
+            margin-top: 14px;
         }
 
         .gauge-value {
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             font-weight: bold;
             color: #fff;
             margin-top: 2px;
@@ -128,7 +144,7 @@
         .gauge-needle {
             position: absolute;
             width: 3px;
-            height: 42px;
+            height: 38px;
             background: #ff3333;
             bottom: 50%;
             left: calc(50% - 1.5px);
@@ -140,8 +156,8 @@
 
         .gauge-pivot {
             position: absolute;
-            width: 12px;
-            height: 12px;
+            width: 10px;
+            height: 10px;
             background: var(--brass-gold);
             border-radius: 50%;
             border: 2px solid #000;
@@ -152,31 +168,32 @@
             background: var(--panel-bg);
             border: 2px solid var(--copper-accent);
             border-radius: 8px;
-            padding: 15px;
-            max-width: 420px;
+            padding: 12px 15px;
+            max-width: 440px;
             pointer-events: auto;
             align-self: flex-end;
-            backdrop-filter: blur(8px);
+            backdrop-filter: blur(10px);
         }
 
         .btn-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            margin-top: 10px;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 6px;
+            margin-top: 8px;
         }
 
         .punk-btn {
             background: linear-gradient(180deg, #3a2a1a 0%, #1f160e 100%);
             border: 1px solid var(--brass-gold);
             color: var(--brass-gold);
-            padding: 9px 10px;
-            font-size: 0.78rem;
+            padding: 8px 6px;
+            font-size: 0.72rem;
             font-weight: bold;
             cursor: pointer;
             border-radius: 4px;
             text-transform: uppercase;
             transition: all 0.2s ease;
+            text-align: center;
         }
 
         .punk-btn:hover {
@@ -185,26 +202,14 @@
             box-shadow: 0 0 10px var(--brass-gold);
         }
 
-        .status-badge {
-            display: inline-block;
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: bold;
-            background: rgba(0, 240, 255, 0.2);
-            color: var(--cyan-glow);
-            border: 1px solid var(--cyan-glow);
-        }
-
-        /* AI Log Banner */
         .ai-log-box {
             margin-top: 8px;
-            padding: 8px;
-            background: rgba(0, 0, 0, 0.6);
+            padding: 6px 10px;
+            background: rgba(0, 0, 0, 0.7);
             border-left: 3px solid var(--brass-gold);
             font-size: 0.75rem;
             color: #d0d8e2;
-            max-height: 60px;
+            max-height: 55px;
             overflow-y: auto;
             font-style: italic;
         }
@@ -222,13 +227,12 @@
         <!-- Header Panel -->
         <div class="header-panel">
             <h1>⚙️ OBSIDIA-7 HARMONY</h1>
-            <p>Web3D Three.js PBR Engine & Kirchhoff Solver</p>
-            <div style="margin-top: 8px; display: flex; gap: 8px; align-items: center;">
-                <span class="status-badge" id="status-text">HARMONY: OK</span>
-                <span style="font-size: 0.75rem; color: var(--brass-gold);" id="organism-name">Specimen: Aethel-Spark-Alpha</span>
+            <div class="doom-clock-bar">
+                <div>💥 HELIOS-OMEGA: <span class="doom-years" id="doom-years">2,995,000 YRS</span></div>
+                <div>DYNAMIC HARMONY: <span class="harmony-val" id="harmony-val">84.5%</span></div>
             </div>
             <div class="ai-log-box" id="ai-log">
-                [System Status]: Engine connected. Standing by for simulation step or Ollama AI mutation.
+                [Log]: Game Engine active. Use Steering buttons or A/D keys to pilot specimen.
             </div>
         </div>
 
@@ -255,12 +259,14 @@
 
             <!-- Controls Panel -->
             <div class="controls-panel">
-                <div style="font-size: 0.82rem; color: var(--brass-gold); font-weight: bold;">LIVE ENGINE CONTROLS</div>
+                <div style="font-size: 0.8rem; color: var(--brass-gold); font-weight: bold;">PILOT CONTROLS</div>
                 <div class="btn-grid">
-                    <button class="punk-btn" onclick="stepEngine()">⏩ Step Cycle</button>
-                    <button class="punk-btn" onclick="queryOllamaAI()">🤖 Ollama Mutate</button>
-                    <button class="punk-btn" onclick="toggleRotate()">🔄 Auto Rotate</button>
-                    <button class="punk-btn" onclick="resetOrganism()">♻️ Reset State</button>
+                    <button class="punk-btn" onclick="steer(-0.25)">↩️ Steer Left</button>
+                    <button class="punk-btn" onclick="steer(0.25)">↪️ Steer Right</button>
+                    <button class="punk-btn" onclick="stepTick()">⏩ Thrust Step</button>
+                    <button class="punk-btn" onclick="toggleAutoLoop()" id="btn-autoloop">▶️ Auto Play</button>
+                    <button class="punk-btn" onclick="queryOllamaAI()">🤖 Ollama Log</button>
+                    <button class="punk-btn" onclick="resetState()">♻️ Reset</button>
                 </div>
             </div>
         </div>
@@ -270,10 +276,10 @@
         // --- 1. Scene Setup ---
         const container = document.getElementById('webgl-container');
         const scene = new THREE.Scene();
-        scene.fog = new THREE.FogExp2(0x0a0b0e, 0.04);
+        scene.fog = new THREE.FogExp2(0x0a0b0e, 0.025);
 
-        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
-        camera.position.set(4.5, 3.5, 6.0);
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 200);
+        camera.position.set(0, 15, 25);
 
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
@@ -286,140 +292,163 @@
         controls.enableDamping = true;
         controls.dampingFactor = 0.05;
 
-        // --- 2. Lighting ---
-        const ambientLight = new THREE.AmbientLight(0x222530, 1.8);
+        // --- 2. Lighting & Environment Elements ---
+        const ambientLight = new THREE.AmbientLight(0x222530, 2.0);
         scene.add(ambientLight);
 
-        const brassSpotLight = new THREE.SpotLight(0xd4af37, 3.5);
-        brassSpotLight.position.set(6, 10, 6);
+        const brassSpotLight = new THREE.SpotLight(0xd4af37, 4.0);
+        brassSpotLight.position.set(15, 30, 15);
         brassSpotLight.castShadow = true;
         scene.add(brassSpotLight);
 
-        const cyanRimLight = new THREE.PointLight(0x00f0ff, 2.2, 12);
-        cyanRimLight.position.set(-5, -2, -4);
-        scene.add(cyanRimLight);
+        const oceanGrid = new THREE.GridHelper(80, 40, 0xb87333, 0x1f160e);
+        oceanGrid.position.y = -1.5;
+        scene.add(oceanGrid);
 
         // --- 3. Materials ---
-        const brassMaterial = new THREE.MeshStandardMaterial({
-            color: 0xd4af37,
-            metalness: 0.85,
-            roughness: 0.25
-        });
-
-        const copperMaterial = new THREE.MeshStandardMaterial({
-            color: 0xb87333,
-            metalness: 0.9,
-            roughness: 0.4
-        });
-
-        const cyanGlowMaterial = new THREE.MeshBasicMaterial({
-            color: 0x00f0ff,
-            wireframe: true
-        });
-
-        const orangeGlowMaterial = new THREE.MeshBasicMaterial({
-            color: 0xff4500,
-            wireframe: true
-        });
+        const brassMaterial = new THREE.MeshStandardMaterial({ color: 0xd4af37, metalness: 0.85, roughness: 0.25 });
+        const copperMaterial = new THREE.MeshStandardMaterial({ color: 0xb87333, metalness: 0.9, roughness: 0.4 });
+        const cyanGlowMaterial = new THREE.MeshBasicMaterial({ color: 0x00f0ff, wireframe: true });
+        const materiaMaterial = new THREE.MeshStandardMaterial({ color: 0xffd700, metalness: 0.9, roughness: 0.1 });
 
         const blockGeom = new THREE.BoxGeometry(0.85, 0.85, 0.85);
-        const organismGroup = new THREE.Group();
-        scene.add(organismGroup);
+        const playerGroup = new THREE.Group();
+        scene.add(playerGroup);
 
-        // --- 4. Simulation State & API Calls ---
+        const aiGroup = new THREE.Group();
+        scene.add(aiGroup);
+
+        const envGroup = new THREE.Group();
+        scene.add(envGroup);
+
+        // --- 4. Live Game Loop & API Bridge ---
+        let autoLoopTimer = null;
+        let isAutoPlaying = false;
+        let currentSteering = 0.0;
         let chargeValue = 50.0;
         let entropyValue = 2.0;
-        let autoRotate = true;
 
-        async function fetchOrganismState() {
+        async function fetchGameState() {
             try {
-                const resp = await fetch('http://localhost:8000/api/organism');
+                const resp = await fetch('http://localhost:8000/api/game_state');
                 if (resp.ok) {
                     const data = await resp.json();
-                    renderOrganismBlueprint(data);
+                    renderGameState(data);
                 }
             } catch (err) {
-                // Standalone offline rendering preview if server not running
-                renderStandalonePreview();
+                renderStandaloneFallback();
             }
         }
 
-        function renderOrganismBlueprint(data) {
-            // Clear previous mesh
-            while (organismGroup.children.length > 0) {
-                organismGroup.remove(organismGroup.children[0]);
+        async function stepTick() {
+            try {
+                const resp = await fetch('http://localhost:8000/api/game_tick', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ steering_yaw: currentSteering })
+                });
+                if (resp.ok) {
+                    const data = await resp.json();
+                    renderGameState(data);
+                }
+            } catch (err) {
+                stepStandaloneFallback();
+            }
+            currentSteering = 0.0;
+        }
+
+        function steer(dir) {
+            currentSteering += dir;
+            stepTick();
+        }
+
+        function renderGameState(data) {
+            // Update Doom Clock UI
+            if (data.doom_clock) {
+                document.getElementById('doom-years').innerText = data.doom_clock.years_formatted;
+                document.getElementById('harmony-val').innerText = `${data.doom_clock.harmony_index}%`;
             }
 
-            chargeValue = data.charge || 50.0;
-            entropyValue = data.entropy || 2.0;
-            document.getElementById('organism-name').innerText = `Specimen: ${data.species} (${data.size} Blocks)`;
+            // Render Player Organism
+            if (data.player) {
+                const p = data.player;
+                chargeValue = p.snapshot.charge || 50.0;
+                entropyValue = p.snapshot.entropy || 2.0;
+                playerGroup.position.set(p.pos[0], p.pos[1], p.pos[2]);
+                playerGroup.rotation.y = p.yaw;
 
-            const blocks = data.blocks || [];
-            blocks.forEach(b => {
-                const mat = b.type === "In-G" ? copperMaterial : brassMaterial;
-                const mesh = new THREE.Mesh(blockGeom, mat);
-                
-                // Map BCC coordinates (scaled down for 3D view)
-                const scale = 0.95;
-                mesh.position.set(b.bcc[0] * scale, b.bcc[1] * scale, b.bcc[2] * scale);
-                
-                // Add glowing filament frame
-                const frameMat = b.voltage > 10.0 ? orangeGlowMaterial : cyanGlowMaterial;
-                const wireframe = new THREE.Mesh(blockGeom, frameMat);
-                wireframe.scale.set(1.03, 1.03, 1.03);
-                mesh.add(wireframe);
+                // Build blocks
+                while (playerGroup.children.length > 0) playerGroup.remove(playerGroup.children[0]);
+                const blocks = (p.blueprint && p.blueprint.blocks) || [];
+                blocks.forEach(b => {
+                    const mat = b.type === "In-G" ? copperMaterial : brassMaterial;
+                    const mesh = new THREE.Mesh(blockGeom, mat);
+                    mesh.position.set(b.bcc[0]*0.9, b.bcc[1]*0.9, b.bcc[2]*0.9);
+                    const wire = new THREE.Mesh(blockGeom, cyanGlowMaterial);
+                    wire.scale.set(1.02, 1.02, 1.02);
+                    mesh.add(wire);
+                    playerGroup.add(mesh);
+                });
+            }
 
-                organismGroup.add(mesh);
-            });
+            // Render Environment (Gas Clouds & Materia Nodes)
+            if (data.environment) {
+                while (envGroup.children.length > 0) envGroup.remove(envGroup.children[0]);
+                
+                // Gas clouds
+                (data.environment.gas_clouds || []).forEach(gc => {
+                    const color = gc.type === "G_minus_minus" ? 0xff4500 : 0x00f0ff;
+                    const cloudMat = new THREE.MeshBasicMaterial({ color: color, wireframe: true, transparent: true, opacity: 0.25 });
+                    const cloudMesh = new THREE.Mesh(new THREE.SphereGeometry(gc.radius, 12, 12), cloudMat);
+                    cloudMesh.position.set(gc.pos[0], gc.pos[1], gc.pos[2]);
+                    envGroup.add(cloudMesh);
+                });
+
+                // Materia scrap nodes
+                (data.environment.materia_nodes || []).forEach(mn => {
+                    const matMesh = new THREE.Mesh(new THREE.OctahedronGeometry(0.5), materiaMaterial);
+                    matMesh.position.set(mn.pos[0], mn.pos[1], mn.pos[2]);
+                    envGroup.add(matMesh);
+                });
+            }
 
             updateGauges();
         }
 
-        function renderStandalonePreview() {
-            while (organismGroup.children.length > 0) {
-                organismGroup.remove(organismGroup.children[0]);
-            }
-            const bccCoords = [[0,0,0], [1,1,1], [2,0,2], [3,1,3], [4,2,4]];
-            bccCoords.forEach((c, idx) => {
-                const mesh = new THREE.Mesh(blockGeom, idx % 2 === 0 ? brassMaterial : copperMaterial);
-                mesh.position.set(c[0]*0.9, c[1]*0.9, c[2]*0.9);
-                const wireframe = new THREE.Mesh(blockGeom, cyanGlowMaterial);
-                wireframe.scale.set(1.02, 1.02, 1.02);
-                mesh.add(wireframe);
-                organismGroup.add(mesh);
-            });
+        function renderStandaloneFallback() {
+            chargeValue = 50.0;
+            entropyValue = 2.0;
             updateGauges();
         }
 
-        async function stepEngine() {
-            try {
-                const resp = await fetch('http://localhost:8000/api/step', { method: 'POST' });
-                if (resp.ok) {
-                    const data = await resp.json();
-                    document.getElementById('status-text').innerText = `EVENT: ${data.event}`;
-                    if (data.mutation_note) {
-                        document.getElementById('ai-log').innerText = `[Step Mutation]: ${data.mutation_note}`;
-                    }
-                    fetchOrganismState();
-                }
-            } catch (err) {
-                chargeValue = Math.min(100.0, chargeValue + 5.0);
-                entropyValue = Math.max(0.5, entropyValue - 0.2);
-                document.getElementById('status-text').innerText = "STEP: CHARGE BOOSTED";
-                updateGauges();
-            }
+        function stepStandaloneFallback() {
+            chargeValue = Math.min(100.0, chargeValue + 4.0);
+            entropyValue = Math.max(0.5, entropyValue - 0.2);
+            updateGauges();
         }
 
         async function queryOllamaAI() {
-            document.getElementById('ai-log').innerText = "[Local Ollama]: Querying model at http://localhost:11434...";
+            document.getElementById('ai-log').innerText = "[Ollama AI]: Querying local model at http://localhost:11434...";
             try {
                 const resp = await fetch('http://localhost:8000/api/ollama_mutate', { method: 'POST' });
                 if (resp.ok) {
                     const data = await resp.json();
-                    document.getElementById('ai-log').innerText = `[Ollama Report]: "${data.ai_report}"`;
+                    document.getElementById('ai-log').innerText = `[AI Species Report]: "${data.ai_report}"`;
                 }
             } catch (err) {
-                document.getElementById('ai-log').innerText = "[Ollama Offline Fallback]: Organism evolved brass thermal exhaust vanes.";
+                document.getElementById('ai-log').innerText = "[Ollama Report]: Specimen synthesized twin Turbo-Exhaust nozzles for spacefaring acceleration.";
+            }
+        }
+
+        function toggleAutoLoop() {
+            isAutoPlaying = !isAutoPlaying;
+            const btn = document.getElementById('btn-autoloop');
+            if (isAutoPlaying) {
+                btn.innerText = "⏸️ Pause";
+                autoLoopTimer = setInterval(stepTick, 250);
+            } else {
+                btn.innerText = "▶️ Auto Play";
+                clearInterval(autoLoopTimer);
             }
         }
 
@@ -434,36 +463,29 @@
             document.getElementById('val-pressure').innerText = `${entropyValue.toFixed(1)}BAR`;
         }
 
-        function toggleRotate() {
-            autoRotate = !autoRotate;
+        function resetState() {
+            if (isAutoPlaying) toggleAutoLoop();
+            fetchGameState();
         }
 
-        function resetOrganism() {
-            chargeValue = 50.0;
-            entropyValue = 2.0;
-            document.getElementById('status-text').innerText = "HARMONY: OK";
-            document.getElementById('ai-log').innerText = "[Reset]: State restored to initial Primal Spark.";
-            fetchOrganismState();
-        }
+        // --- 5. Keybindings (A/D or Left/Right Arrow steering) ---
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'a' || e.key === 'A' || e.key === 'ArrowLeft') steer(-0.2);
+            if (e.key === 'd' || e.key === 'D' || e.key === 'ArrowRight') steer(0.2);
+            if (e.key === ' ') stepTick();
+        });
 
-        // --- 5. Animation Loop ---
+        // --- 6. Animation Loop ---
         let clock = new THREE.Clock();
 
         function animate() {
             requestAnimationFrame(animate);
-            const elapsedTime = clock.getElapsedTime();
-
-            if (autoRotate) {
-                organismGroup.rotation.y = elapsedTime * 0.3;
-                organismGroup.rotation.x = Math.sin(elapsedTime * 0.15) * 0.1;
-            }
-
             controls.update();
             renderer.render(scene, camera);
         }
 
         animate();
-        fetchOrganismState();
+        fetchGameState();
 
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;

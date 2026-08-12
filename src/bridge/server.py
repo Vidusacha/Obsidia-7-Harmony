@@ -1,6 +1,6 @@
 """
-Obsidia-7 Harmony — Local HTTP Engine Server & Web Bridge
-Serves Web3D Three.js frontend and exposes live simulation REST APIs.
+Obsidia-7 Harmony — Local HTTP Engine Server & Live Game Bridge
+Serves Web3D Three.js game interface and exposes full 3D simulation REST APIs.
 """
 
 import http.server
@@ -14,8 +14,7 @@ from typing import Dict, Any
 # Add project root to sys.path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
-from src.core.organism import Organism
-from src.core.config_loader import load_config
+from src.game.game_manager import GameManager
 
 # Ensure UTF-8 output encoding for Windows terminal compatibility
 if hasattr(sys.stdout, 'reconfigure'):
@@ -27,17 +26,17 @@ if hasattr(sys.stdout, 'reconfigure'):
 PORT = 8000
 OLLAMA_URL = "http://localhost:11434/api/generate"
 
-# Initialize global organism & configuration
-config = load_config()
-organism = Organism(species_name="Aethel-Spark-Alpha", config=config)
+# Initialize global game manager
+game = GameManager()
 
 
-class ObsidiaHTTPHandler(http.server.SimpleHTTPRequestHandler):
-    """HTTP Request Handler serving static web files and REST endpoints."""
+class ObsidiaGameHTTPHandler(http.server.SimpleHTTPRequestHandler):
+    """HTTP Request Handler serving Web3D game assets and REST API endpoints."""
 
     def do_GET(self):
-        if self.path == "/api/organism":
-            self.send_json_response(organism.to_json_blueprint())
+        if self.path == "/api/game_state" or self.path == "/api/organism":
+            state = game.tick_game_loop(player_steering_yaw=0.0)
+            self.send_json_response(state)
         elif self.path == "/" or self.path == "/index.html":
             self.path = "/demos/demo1_web_threejs/index.html"
             return super().do_GET()
@@ -45,18 +44,31 @@ class ObsidiaHTTPHandler(http.server.SimpleHTTPRequestHandler):
             return super().do_GET()
 
     def do_POST(self):
-        if self.path == "/api/step":
-            event, snapshot = organism.step_simulation(gas_environment="G_minus")
-            self.send_json_response(snapshot)
+        if self.path == "/api/game_tick" or self.path == "/api/step":
+            # Parse steering input if available
+            steering_yaw = 0.0
+            content_length = int(self.headers.get('Content-Length', 0))
+            if content_length > 0:
+                body_bytes = self.rfile.read(content_length)
+                try:
+                    body = json.loads(body_bytes.decode('utf-8'))
+                    steering_yaw = body.get('steering_yaw', 0.0)
+                except Exception:
+                    pass
+
+            state = game.tick_game_loop(player_steering_yaw=steering_yaw)
+            self.send_json_response(state)
+
         elif self.path == "/api/ollama_mutate":
+            org = game.player_organism
             prompt = (
-                f"You are the AI mutation engine for Obsidia-7 Harmony. "
-                f"Organism '{organism.species_name}' has {len(organism.nodes)} blocks: {[n.block_type for n in organism.nodes]}. "
-                f"Current Charge is {organism.charge:.1f}V in G-- gas environment. "
-                f"In 2 short sentences, describe its new Riveting-Punk adaptation."
+                f"You are the Lead Systems Architect AI for Obsidia-7 Harmony. "
+                f"Player specimen '{org.species_name}' has evolved to {len(org.nodes)} blocks: {[n.block_type for n in org.nodes]}. "
+                f"Doom Clock: {game.doom_clock.remaining_years:,} years remaining until Helios-Omega supernova. "
+                f"Describe its emergent Riveting-Punk adaptation and spacefaring capability progress in 2 sentences."
             )
             report = query_local_ollama(prompt)
-            self.send_json_response({"species": organism.species_name, "ai_report": report})
+            self.send_json_response({"species": org.species_name, "ai_report": report})
         else:
             self.send_error(404, "Endpoint not found")
 
@@ -89,18 +101,17 @@ def query_local_ollama(prompt: str, model_name: str = "qwen:latest") -> str:
             result = json.loads(resp.read().decode('utf-8'))
             return result.get('response', '').strip()
     except Exception:
-        return "[Local Ollama Engine]: Organism synthesized reinforced brass cooling vanes to vent thermal overloads."
+        return "[Local Ollama Engine]: Organism synthesized reinforced brass cooling vanes and rocket exhaust nozzles."
 
 
 def run_server():
-    # Set current directory to workspace root
     os.chdir(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
     
-    with socketserver.TCPServer(("", PORT), ObsidiaHTTPHandler) as httpd:
+    with socketserver.TCPServer(("", PORT), ObsidiaGameHTTPHandler) as httpd:
         print("\n" + "=" * 65)
-        print(" ⚙️ OBSIDIA-7 HARMONY — Engine Server & Web Bridge Active")
-        print(f" Live Web App UI: http://localhost:{PORT}")
-        print(f" Organism API:    http://localhost:{PORT}/api/organism")
+        print(" ⚙️ OBSIDIA-7 HARMONY — Game Engine Server Active")
+        print(f" Live Web3D Game: http://localhost:{PORT}")
+        print(f" Game State API: http://localhost:{PORT}/api/game_state")
         print("=" * 65 + "\n")
         httpd.serve_forever()
 
