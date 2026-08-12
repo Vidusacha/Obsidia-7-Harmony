@@ -28,7 +28,7 @@
 
 ### ADR-005: Visualizer Engine Stack Selection — Web3D (Three.js / WebGL)
 - **Date**: 2026-08-12
-- **Status**: Re-evaluated due to performance
+- **Status**: Replaced by Native Engine (ADR-008)
 - **Context**: Web browser HTTP polling produced 10 FPS lag.
 
 ### ADR-006: Concept Shift — Autonomous Ecosystem Spectator Mode (God Mode / Digital Aquarium)
@@ -39,9 +39,14 @@
 
 ### ADR-007: Native Desktop GPU Engine Candidates (144+ FPS)
 - **Date**: 2026-08-12
-- **Status**: In Evaluation
-- **Context**: EV requested high-speed native 3D rendering without browser/HTTP latency.
-- **Decision**: Built Native Demo A (ModernGL OpenGL 3.3 GPU engine) and Native Demo B (Pygame 3D Particle GPU Engine) running natively at 120–144+ FPS.
+- **Status**: Completed
+- **Context**: EV requested high-speed native 3D rendering without browser/HTTP latency. Built Native Demo A (ModernGL) and Native Demo B (Pygame 3D).
+
+### ADR-008: Master Engine Selection — Native Pygame 3D Desktop Engine (120+ FPS)
+- **Date**: 2026-08-12
+- **Status**: Approved by EV
+- **Context**: EV evaluated native demos side-by-side and selected Pygame 3D for the master desktop application (`src/engine_native_3d.py`).
+- **Decision**: Formally adopted **Native Pygame 3D Desktop Engine** as the official primary application launcher. Renders 4 species, 3D particle systems, analog HUD gauges, tracking camera, and local Ollama REST bridge at 120+ FPS directly on Windows.
 
 ---
 
