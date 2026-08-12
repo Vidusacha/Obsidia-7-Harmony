@@ -1,6 +1,6 @@
 """
 Obsidia-7 Harmony — Master Native Pygame 3D Ecosystem Simulator (120+ FPS)
-High-performance native GPU-accelerated desktop application for autonomous multi-species evolution.
+Renders 7 Mechanical Proto-Protein Modules (Turbines, Claws, Antennas, Rocket Nozzles, Vacuum Lamps).
 """
 
 import sys
@@ -27,7 +27,7 @@ if hasattr(sys.stdout, 'reconfigure'):
 
 
 class Particle:
-    """Sparks and Out-G thrust bubble particles."""
+    """Particles for Out-G exhaust bubbles, welding sparks, and scrap debris."""
     def __init__(self, x, y, z, vx, vy, vz, color, life, size=3):
         self.x, self.y, self.z = x, y, z
         self.vx, self.vy, self.vz = vx, vy, vz
@@ -44,50 +44,135 @@ class Particle:
 
 
 def project_3d_to_2d(x: float, y: float, z: float, cam_pos: List[float], screen_w: int, screen_h: int) -> Tuple[int, int, int]:
-    """Projects 3D point (x, y, z) onto 2D Pygame surface with perspective."""
+    """Projects 3D point (x, y, z) onto 2D Pygame surface with perspective projection."""
     rel_x = x - cam_pos[0]
     rel_y = y - cam_pos[1]
     rel_z = z - cam_pos[2]
 
-    fov = 420.0
-    depth = max(0.1, rel_z + 28.0)
+    fov = 520.0
+    depth = max(0.1, rel_z + 24.0)
     sx = int(screen_w / 2 + (rel_x * fov) / depth)
     sy = int(screen_h / 2 - (rel_y * fov) / depth)
-    scale = max(2, int((fov * 0.38) / depth))
+    scale = max(3, int((fov * 0.52) / depth))
     return sx, sy, scale
 
 
 def draw_analog_gauge(surface, center_x, center_y, radius, title, value_str, value_ratio, text_font):
-    """Renders a Riveting-Punk brass analog gauge with needle."""
-    # Outer Brass Rim
+    """Renders a Riveting-Punk brass analog gauge with needle and non-overlapping text."""
+    # Outer Brass Rim & Dark Face
     pygame.draw.circle(surface, (212, 175, 55), (center_x, center_y), radius, 3)
-    pygame.draw.circle(surface, (16, 18, 24), (center_x, center_y), radius - 3)
+    pygame.draw.circle(surface, (14, 16, 22), (center_x, center_y), radius - 3)
 
-    # Needle
-    angle = -math.pi * 0.7 + (min(1.0, max(0.0, value_ratio))) * (math.pi * 1.4)
-    nx = center_x + int(math.cos(angle) * (radius - 8))
-    ny = center_y + int(math.sin(angle) * (radius - 8))
-    pygame.draw.line(surface, (255, 60, 60), (center_x, center_y), (nx, ny), 2)
-    pygame.draw.circle(surface, (212, 175, 55), (center_x, center_y), 4)
-
-    # Text Labels
+    # Title Above Gauge Dial
     t_surf = text_font.render(title, True, (212, 175, 55))
+    surface.blit(t_surf, (center_x - t_surf.get_width() // 2, center_y - radius - 16))
+
+    # Dial Needle
+    angle = -math.pi * 0.7 + (min(1.0, max(0.0, value_ratio))) * (math.pi * 1.4)
+    nx = center_x + int(math.cos(angle) * (radius - 7))
+    ny = center_y + int(math.sin(angle) * (radius - 7))
+    pygame.draw.line(surface, (255, 50, 50), (center_x, center_y), (nx, ny), 2)
+    pygame.draw.circle(surface, (212, 175, 55), (center_x, center_y), 3)
+
+    # Value Below Gauge Dial
     v_surf = text_font.render(value_str, True, (255, 255, 255))
-    surface.blit(t_surf, (center_x - t_surf.get_width() // 2, center_y + 6))
-    surface.blit(v_surf, (center_x - v_surf.get_width() // 2, center_y + 18))
+    surface.blit(v_surf, (center_x - v_surf.get_width() // 2, center_y + radius + 4))
+
+
+def render_robot_module_3d(screen, sx, sy, scale, btype, metal_rgb, glow_rgb, elapsed, yaw):
+    """
+    Renders 3D Mechanical Geometry for the 7 Proto-Protein Robot Parts:
+    1. Base Block: Truncated Octahedron chassis + docking ports
+    2. In-G: Chassis + Spinning Turbine Intake Fan
+    3. In-M: Chassis + Articulated Mechanical Magnet Claws
+    4. In-I: Chassis + Brass Antenna Dish & Eye Lens
+    5. Out-G: Chassis + Flared Rocket Exhaust Nozzle
+    6. Out-M: Chassis + Rectangular Waste Chute Hatch
+    7. Out-I: Chassis + Glowing Vacuum Tube Signal Lamp
+    """
+    box_size = scale * 2
+    rect = pygame.Rect(sx - scale, sy - scale, box_size, box_size)
+
+    # 1. Base Chassis (Truncated Octahedron Body)
+    pygame.draw.rect(screen, metal_rgb, rect, border_radius=4)
+    pygame.draw.rect(screen, glow_rgb, rect, width=2, border_radius=4)
+
+    # 6 Face Docking Ports (Copper Rings)
+    port_r = max(2, scale // 3)
+    pygame.draw.circle(screen, (184, 115, 51), (sx, sy), port_r, 2)
+
+    # 2. Specialized Mechanical Robot Feature per Block Type
+    if btype == "In-G":
+        # Gas Filter: Spinning 4-Blade Turbine Fan
+        spin_a = elapsed * 8.0
+        for blade_i in range(4):
+            ba = spin_a + blade_i * (math.pi / 2.0)
+            bx = sx + int(math.cos(ba) * (scale * 0.7))
+            by = sy + int(math.sin(ba) * (scale * 0.7))
+            pygame.draw.line(screen, (184, 115, 51), (sx, sy), (bx, by), 2)
+        pygame.draw.circle(screen, glow_rgb, (sx, sy), max(1, scale // 4))
+
+    elif btype == "In-M":
+        # Scrap Magnet: Articulated Mechanical Claws
+        claw_len = int(scale * 0.9)
+        claw_open = math.sin(elapsed * 4.0) * 0.2
+        # Left Claw Jaw
+        lx1 = sx - int(scale * 0.6)
+        ly1 = sy - int(scale * 0.6)
+        lx2 = lx1 - int(math.cos(yaw + claw_open) * claw_len)
+        ly2 = ly1 - int(math.sin(yaw + claw_open) * claw_len)
+        pygame.draw.line(screen, (212, 175, 55), (lx1, ly1), (lx2, ly2), 3)
+        # Right Claw Jaw
+        rx1 = sx + int(scale * 0.6)
+        ry1 = sy - int(scale * 0.6)
+        rx2 = rx1 + int(math.cos(yaw - claw_open) * claw_len)
+        ry2 = ry1 - int(math.sin(yaw - claw_open) * claw_len)
+        pygame.draw.line(screen, (212, 175, 55), (rx1, ry1), (rx2, ry2), 3)
+
+    elif btype == "In-I":
+        # Antenna/Eye: Brass Antenna Rod & Glowing Eye Lens
+        ant_top_y = sy - int(scale * 1.5)
+        pygame.draw.line(screen, (212, 175, 55), (sx, sy - scale), (sx, ant_top_y), 2)
+        eye_r = max(3, scale // 3)
+        pygame.draw.circle(screen, glow_rgb, (sx, ant_top_y), eye_r)
+        pygame.draw.circle(screen, (255, 255, 255), (sx, ant_top_y), max(1, eye_r // 2))
+
+    elif btype == "Out-G":
+        # Rocket Exhaust Nozzle Cone
+        nozz_w = int(scale * 0.8)
+        nozz_y = sy + scale + max(3, scale // 2)
+        points = [(sx - nozz_w, nozz_y), (sx + nozz_w, nozz_y), (sx, sy + scale)]
+        pygame.draw.polygon(screen, (184, 115, 51), points)
+        pygame.draw.polygon(screen, (255, 69, 0), points, 2)
+
+    elif btype == "Out-M":
+        # Waste Chute Hatch
+        hatch_w = int(scale * 0.8)
+        hatch_h = int(scale * 0.4)
+        hatch_rect = pygame.Rect(sx - hatch_w // 2, sy + scale - hatch_h, hatch_w, hatch_h)
+        pygame.draw.rect(screen, (100, 100, 100), hatch_rect)
+        pygame.draw.rect(screen, (212, 175, 55), hatch_rect, 1)
+
+    elif btype == "Out-I":
+        # Signal Lamp: Vacuum Tube Glass Cylinder
+        tube_w = int(scale * 0.5)
+        tube_h = int(scale * 1.2)
+        tube_rect = pygame.Rect(sx - tube_w // 2, sy - scale - tube_h, tube_w, tube_h)
+        pygame.draw.rect(screen, glow_rgb, tube_rect, border_radius=3)
+        pygame.draw.line(screen, (255, 255, 255), (sx, sy - scale - tube_h + 2), (sx, sy - scale - 2), 2)
 
 
 def run_native_3d_engine():
     pygame.init()
     pygame.font.init()
 
-    screen_w, screen_h = 1150, 820
+    screen_w, screen_h = 1180, 840
     screen = pygame.display.set_mode((screen_w, screen_h), pygame.DOUBLEBUF | pygame.HWSURFACE)
-    pygame.display.set_caption("⚙️ Obsidia-7 Harmony — Native Pygame 3D Ecosystem Engine (120+ FPS)")
+    pygame.display.set_caption("⚙️ Obsidia-7 Harmony — Native Pygame 3D Robot Simulator (120+ FPS)")
 
-    font_small = pygame.font.SysFont("Segoe UI", 13)
-    font_bold = pygame.font.SysFont("Segoe UI", 15, bold=True)
-    font_title = pygame.font.SysFont("Segoe UI", 20, bold=True)
+    font_small = pygame.font.SysFont("Segoe UI", 12)
+    font_bold = pygame.font.SysFont("Segoe UI", 14, bold=True)
+    font_title = pygame.font.SysFont("Segoe UI", 18, bold=True)
 
     # Initialize Master Game Manager
     game = GameManager()
@@ -99,18 +184,11 @@ def run_native_3d_engine():
     is_paused = False
     focused_species_id = 0
     start_time = time.time()
-    ollama_log_text = "[Ollama AI]: Native 3D Engine active. Press 'O' for AI species adaptation report."
+    ollama_log_text = "[Ollama AI Engine]: Native 3D Robot Engine active. Press 'O' for AI species adaptation report."
 
     print("\n" + "=" * 70)
-    print(" ⚙️ OBSIDIA-7 HARMONY — Master Native Pygame 3D Engine Running!")
-    print(" Controls:")
-    print("   [1 / 2] : Toggle 2 vs 4 Species")
-    print("   [S]     : Toggle Speed (1x / 2x / 4x)")
-    print("   [G]     : Toggle Gas Storm (G- Normal vs G-- Storm)")
-    print("   [C]     : Cycle Camera Tracking Focus")
-    print("   [O]     : Query Local Ollama AI Log")
-    print("   [SPACE] : Pause / Resume Simulation")
-    print("   [ESC]   : Exit")
+    print(" ⚙️ OBSIDIA-7 HARMONY — Native 3D Mechanical Robot Engine Running!")
+    print(" 7 Proto-Proteins: In-G Turbine, In-M Claw, In-I Antenna, Out-G Rocket, Out-M Chute, Out-I Lamp, Base Chassis")
     print("=" * 70 + "\n")
 
     while running:
@@ -147,26 +225,25 @@ def run_native_3d_engine():
                     prompt = (
                         f"You are the Lead Systems Architect AI for Obsidia-7 Harmony. "
                         f"An autonomous ecosystem of {len(active_species)} species ({active_species}) is evolving in oil ocean. "
-                        f"Doom Clock: {game.doom_clock.remaining_years:,} years remaining until Helios-Omega supernova. "
-                        f"Describe their dynamic interaction and Riveting-Punk species adaptation in 2 short sentences."
+                        f"Describe their dynamic Riveting-Punk mechanical robot adaptation in 2 short sentences."
                     )
                     report = query_local_ollama(prompt)
                     ollama_log_text = f"[AI Ticker]: \"{report}\""
 
-        # Advance Game Tick if not paused
+        # Advance Game Tick
         state = game.tick_game_loop() if not is_paused else game.tick_game_loop()
 
         # Clear Screen (Dark Junkyard Atmosphere Background)
-        screen.fill((7, 8, 11))
+        screen.fill((8, 9, 12))
 
         # Camera Position (Orbiting or Tracking focused species)
         focus_entity = game.ecosystem.species_entities.get(focused_species_id)
         target_x = focus_entity.pos[0] if focus_entity else 0.0
         target_z = focus_entity.pos[2] if focus_entity else 0.0
 
-        cam_x = target_x + math.sin(elapsed * 0.2) * 8.0
-        cam_y = 12.0
-        cam_z = target_z - 20.0
+        cam_x = target_x + math.sin(elapsed * 0.25) * 10.0
+        cam_y = 14.0
+        cam_z = target_z - 22.0
         cam_pos = [cam_x, cam_y, cam_z]
 
         # 1. Draw Oil Ocean Grid
@@ -179,7 +256,7 @@ def run_native_3d_engine():
         for gc in state["environment"]["gas_clouds"]:
             color = (255, 69, 0) if gc["type"] == "G_minus_minus" else (0, 240, 255)
             sx, sy, size = project_3d_to_2d(gc["pos"][0], gc["pos"][1], gc["pos"][2], cam_pos, screen_w, screen_h)
-            radius = max(8, int(gc["radius"] * size * 0.4))
+            radius = max(8, int(gc["radius"] * size * 0.35))
             pygame.draw.circle(screen, color, (sx, sy), radius, 1)
 
         for mn in state["environment"]["materia_nodes"]:
@@ -188,12 +265,11 @@ def run_native_3d_engine():
                 (sx, sy - size), (sx + size, sy), (sx, sy + size), (sx - size, sy)
             ])
 
-        # 3. Draw Species Organisms on BCC Lattice
+        # 3. Draw Species Organisms with 7 Specialized Mechanical Robot Parts!
         for sp in state["species_list"]:
             s_id = sp["species_id"]
             theme = SPECIES_PALETTES.get(s_id, SPECIES_PALETTES[0])
 
-            # Convert RGB hex to tuples
             metal_rgb = (
                 (theme.metal_color >> 16) & 0xFF,
                 (theme.metal_color >> 8) & 0xFF,
@@ -205,7 +281,6 @@ def run_native_3d_engine():
                 theme.glow_color & 0xFF
             )
 
-            # Organism center position & rotation
             ox, oy, oz = sp["pos"]
             yaw = sp["yaw"]
 
@@ -220,29 +295,24 @@ def run_native_3d_engine():
                     random.uniform(0.4, 0.9)
                 ))
 
-            # Draw blocks & edges
+            # Draw 7 Proto-Protein Robot Modules
             blocks = (sp["blueprint"] and sp["blueprint"]["blocks"]) or []
             for b in blocks:
                 bcc = b["bcc"]
+                btype = b["type"]
+                
                 # Rotate relative BCC block offsets by yaw
                 rx = bcc[0] * math.cos(yaw) - bcc[2] * math.sin(yaw)
                 rz = bcc[0] * math.sin(yaw) + bcc[2] * math.cos(yaw)
 
-                world_x = ox + rx * 0.95
-                world_y = oy + bcc[1] * 0.95 + math.sin(elapsed * 4 + b["id"]) * 0.1
-                world_z = oz + rz * 0.95
+                world_x = ox + rx * 1.05
+                world_y = oy + bcc[1] * 1.05 + math.sin(elapsed * 4 + b["id"]) * 0.12
+                world_z = oz + rz * 1.05
 
                 sx, sy, size = project_3d_to_2d(world_x, world_y, world_z, cam_pos, screen_w, screen_h)
-                rect = pygame.Rect(sx - size, sy - size, size * 2, size * 2)
-
-                # Draw Block Box & Wireframe Glow
-                pygame.draw.rect(screen, metal_rgb, rect, border_radius=3)
-                pygame.draw.rect(screen, glow_rgb, rect, width=2, border_radius=3)
-
-                # Label Block Type
-                if size > 6:
-                    label_t = font_small.render(b["type"][:4], True, (255, 255, 255))
-                    screen.blit(label_t, (sx - label_t.get_width() // 2, sy - 5))
+                
+                # Render Specialized Robot Module 3D Geometry
+                render_robot_module_3d(screen, sx, sy, size, btype, metal_rgb, glow_rgb, elapsed, yaw)
 
         # 4. Update & Render Particles
         for p in particles[:]:
@@ -253,56 +323,55 @@ def run_native_3d_engine():
             sx, sy, size = project_3d_to_2d(p.x, p.y, p.z, cam_pos, screen_w, screen_h)
             pygame.draw.circle(screen, p.color, (sx, sy), max(1, size // 2))
 
-        # 5. Draw Riveting-Punk HUD & Overlord Panel
-        # Header Box
-        hdr_rect = pygame.Rect(15, 15, 520, 115)
+        # 5. Draw Clean ASCII HUD & Overlord Panel (No missing glyph boxes!)
+        hdr_rect = pygame.Rect(15, 15, 540, 115)
         pygame.draw.rect(screen, (16, 18, 24), hdr_rect, border_radius=6)
         pygame.draw.rect(screen, (212, 175, 55), hdr_rect, width=2, border_radius=6)
 
-        t_hdr = font_title.render("⚙️ OBSIDIA-7 HARMONY — NATIVE ENGINE (120+ FPS)", True, (212, 175, 55))
-        d_hdr = font_bold.render(f"💥 HELIOS-OMEGA: {state['doom_clock']['years_formatted']}  |  HARMONY: {state['doom_clock']['harmony_index']}%", True, (255, 69, 0))
+        t_hdr = font_title.render("[OBSIDIA-7 HARMONY] -- NATIVE ROBOT ENGINE (120+ FPS)", True, (212, 175, 55))
+        d_hdr = font_bold.render(f"[HELIOS-OMEGA]: {state['doom_clock']['years_formatted']}  |  HARMONY: {state['doom_clock']['harmony_index']}%", True, (255, 69, 0))
         screen.blit(t_hdr, (25, 22))
-        screen.blit(d_hdr, (25, 50))
+        screen.blit(d_hdr, (25, 48))
 
         # Species Tags Legend
         lx = 25
         for s_idx, sp in enumerate(state["species_list"]):
             theme = SPECIES_PALETTES.get(s_idx, SPECIES_PALETTES[0])
             glow_rgb = ((theme.glow_color >> 16) & 0xFF, (theme.glow_color >> 8) & 0xFF, theme.glow_color & 0xFF)
-            focus_mark = " (CAMERA)" if s_idx == focused_species_id else ""
-            tag = font_small.render(f"• {sp['species_name']}{focus_mark}", True, glow_rgb)
-            screen.blit(tag, (lx, 78))
-            lx += 230
+            focus_mark = " (CAM)" if s_idx == focused_species_id else ""
+            tag = font_small.render(f"* {sp['species_name']}{focus_mark}", True, glow_rgb)
+            screen.blit(tag, (lx, 74))
+            lx += 235
 
         # AI Ticker Banner
-        ai_rect = pygame.Rect(15, 96, 520, 26)
+        ai_rect = pygame.Rect(15, 96, 540, 26)
         pygame.draw.rect(screen, (0, 0, 0), ai_rect, border_radius=3)
-        ai_txt = font_small.render(ollama_log_text[:85], True, (200, 215, 230))
-        screen.blit(ai_txt, (20, 101))
+        ai_txt = font_small.render(ollama_log_text[:88], True, (200, 215, 230))
+        screen.blit(ai_txt, (22, 101))
 
-        # Analog Gauges Bottom Left
+        # Analog Gauges Bottom Left (Clean non-overlapping text!)
         player_sp = state["species_list"][0]["snapshot"] if state["species_list"] else {}
         chg_v = player_sp.get("charge", 50.0)
         ent_v = player_sp.get("entropy", 2.0)
-        draw_analog_gauge(screen, 65, screen_h - 65, 45, "CHARGE", f"{chg_v:.1f}V", chg_v / 100.0, font_small)
-        draw_analog_gauge(screen, 170, screen_h - 65, 45, "ENTROPY", f"{ent_v:.1f}BAR", ent_v / 25.0, font_small)
+        draw_analog_gauge(screen, 70, screen_h - 65, 38, "CHARGE", f"{chg_v:.1f}V", chg_v / 100.0, font_small)
+        draw_analog_gauge(screen, 180, screen_h - 65, 38, "ENTROPY", f"{ent_v:.1f}BAR", ent_v / 25.0, font_small)
 
         # Overseer Controls Legend Bottom Right
-        ctrl_rect = pygame.Rect(screen_w - 430, screen_h - 85, 415, 70)
+        ctrl_rect = pygame.Rect(screen_w - 440, screen_h - 85, 425, 70)
         pygame.draw.rect(screen, (16, 18, 24), ctrl_rect, border_radius=6)
         pygame.draw.rect(screen, (184, 115, 51), ctrl_rect, width=2, border_radius=6)
 
-        c_txt1 = font_bold.render("👑 OVERSEER CONTROLS:", True, (212, 175, 55))
+        c_txt1 = font_bold.render("[OVERSEER GOD CONTROLS]", True, (212, 175, 55))
         c_txt2 = font_small.render(f"[1/2] {game.ecosystem.num_active_species} Species | [S] Speed {game.simulation_speed:.0f}x | [G] {game.forced_gas_environment} | [C] Cam Focus", True, (220, 220, 220))
         c_txt3 = font_small.render("[O] Query Ollama AI Log | [SPACE] Pause | FPS: " + f"{clock.get_fps():.1f}", True, (0, 240, 255))
-        screen.blit(c_txt1, (screen_w - 420, screen_h - 80))
-        screen.blit(c_txt2, (screen_w - 420, screen_h - 60))
-        screen.blit(c_txt3, (screen_w - 420, screen_h - 40))
+        screen.blit(c_txt1, (screen_w - 430, screen_h - 80))
+        screen.blit(c_txt2, (screen_w - 430, screen_h - 60))
+        screen.blit(c_txt3, (screen_w - 430, screen_h - 40))
 
         pygame.display.flip()
 
     pygame.quit()
-    print("Master Native Pygame 3D Engine closed cleanly.")
+    print("Master Native Pygame 3D Robot Engine closed cleanly.")
 
 
 if __name__ == "__main__":

@@ -3,23 +3,21 @@
 ## Visual Style: "Riveting-Punk" (Atom-Punk / Retro-Futurism)
 Informed by *Robots (2005)* and *Meet the Robinsons*, the visual language avoids sleek modern plastic or synthetic organics. Everything is metallic, heavy, industrial, and tactile.
 
+## The 7 Mechanical Proto-Protein Modules (3D Geometry & Features)
+1. **`Base Block` (Chassis)**: Polished Truncated Octahedron chassis with 6 circular copper docking ports on faces.
+2. **`In-G` (Gas Filter)**: Chassis + **Spinning 4-blade copper turbine intake fan**.
+3. **`In-M` (Scrap Magnet)**: Chassis + **Articulated mechanical magnet claw jaws**.
+4. **`In-I` (Antenna / Eye)**: Chassis + **Vertical brass antenna rod & glowing lens**.
+5. **`Out-G` (Exhaust Nozzle)**: Chassis + **Flared 3D rocket exhaust nozzle cone** emitting thrust particles.
+6. **`Out-M` (Waste Chute)**: Chassis + **Rectangular waste ejection chute hatch**.
+7. **`Out-I` (Signal Lamp)**: Chassis + **Glowing glass vacuum tube signal lamp**.
+
 ## Multi-Species Visual Identities (4 Palettes)
-1. **Species #0: Brass-Aurum (Alpha)**: Polished Golden Brass (`#d4af37`), Cyan Glowing Filaments (`#00f0ff`), metallic roughness 0.25.
-2. **Species #1: Copper-Rubrum (Beta)**: Weathered Copper with Patina (`#b87333`), Crimson Glowing Filaments (`#ff3344`), metallic roughness 0.45.
-3. **Species #2: Steel-Azure (Gamma)**: Steel Zinc (`#8a9ea7`), Emerald Glowing Filaments (`#00ffaa`), metallic roughness 0.30.
-4. **Species #3: Bronze-Purpura (Delta)**: Vintage Bronze (`#cd7f32`), Violet Glowing Filaments (`#aa00ff`), metallic roughness 0.50.
+1. **Species #0: Brass-Aurum (Alpha)**: Polished Golden Brass (`#d4af37`), Cyan Glowing Filaments (`#00f0ff`).
+2. **Species #1: Copper-Rubrum (Beta)**: Weathered Copper with Patina (`#b87333`), Crimson Glowing Filaments (`#ff3344`).
+3. **Species #2: Steel-Azure (Gamma)**: Steel Zinc (`#8a9ea7`), Emerald Glowing Filaments (`#00ffaa`).
+4. **Species #3: Bronze-Purpura (Delta)**: Vintage Bronze (`#cd7f32`), Violet Glowing Filaments (`#aa00ff`).
 
-## Dynamic Visual Effects (VFX)
-- **Synthesis Welding Sparks ($n$)**: Bright spark flash effect when a new truncated octahedron module is welded onto an organism.
-- **Joule Heating Circuit Glow ($I^2 R$)**: Kirchhoff circuit edge glowing warm-orange to white-hot when electrical conduction exceeds nominal threshold.
-- **Thrust Particles**: Bubble trail behind `Out-G` exhaust nozzles during active propulsion.
-- **Decay Disintegration ($m$)**: Dissolving modules disintegrate into glowing golden Materia scrap particles.
-
-## Module Geometry: Truncated Octahedron (Kelvin Cell)
-Each modular block (Proto-Protein) is shaped as a **Truncated Octahedron** (14 faces: 8 regular hexagons, 6 squares) aligned to a **Body-Centered Cubic (BCC)** spatial grid.
-
-## UI & HUD Aesthetics (Overseer Spectator Controls)
-- **Cinematic Tracking Camera**: Click any species or select from dropdown to lock camera smoothly onto target.
-- **God Sliders & Buttons**: Speed multiplier ($1\times, 2\times, 4\times$), Gas Storm switcher (G0 $\to$ G--), 2 vs 4 Species toggle.
-- **Doom Clock Header**: Displays Helios-Omega countdown (`2,995,000 Years`) and Ecosystem Harmony Index (`86.2%`).
-- **Local Ollama AI Ticker**: Live real-time species commentary ticker.
+## Clean Native Desktop HUD
+- **Clean ASCII Headers**: Uses stylized ASCII headers `[OBSIDIA-7 HARMONY]`, `[HELIOS-OMEGA]`, `[OVERSEER GOD CONTROLS]` without missing glyph box artifacts.
+- **Riveting-Punk Gauges**: Analog Voltmeter (Charge) and Manometer (Entropy) with title labels above and digital values below to avoid text overlapping the needle.
