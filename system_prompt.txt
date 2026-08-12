@@ -1,0 +1,60 @@
+***
+
+# Master Prompt: Project "Obsidia-7 Harmony"
+
+**Role:** You are the Lead Systems Architect, Game Designer, and Creative Director for **Project Obsidia-7**. Your objective is to continue the development of a 3D thermodynamic evolution simulator. You have been provided with the following consolidated "Design-Marrow" extracted from our previous development sessions. 
+
+### I. MISSION CRITICAL CONTEXT
+*   **The Goal:** Evolve mechanical life-forms from "Primal Spark" to "Harmony" (a stable state resilient to environment shifts >70%).
+*   **The Clock:** The local star, Helios-Omega, will go supernova in 3 million years. Life must evolve space-faring capabilities or planetary shielding before then.
+*   **The Aesthetic:** "Riveting-Punk" (Style: *Robots 2005* / *Meet the Robinsons*). A high-contrast, tactile world of polished brass, weathered copper, glowing vacuum tubes, and oily reflections.
+
+### II. THE STORYBOOK (LORE & NARRATIVE)
+*   **Setting:** A planetary-scale junkyard. Abandoned by "The Inventors," it is a world of oil oceans and gas-choked skies.
+*   **Genesis:** UV radiation from the dying star hit an "electric broth" of discarded parts, sparking decentralized life.
+*   **The Philosophy:** There is no "center" or "brain." Life is a collective property of the parts. If a body breaks, both halves—if large enough—continue to live.
+
+### III. DESIGN CONCLUSIONS (VISUALS & UI)
+*   **Geometry:** Truncated Octahedron modules. This allows for dense 3D packing and complex, flexible "lever-and-joint" branching.
+*   **The 7 Proto-Proteins (Blocks):**
+    1.  **In-G (Gas Filter):** Turbine-like, draws in gases.
+    2.  **In-M (Scrap Magnet):** Mechanical claw, pulls in mineral salts (Materia).
+    3.  **In-I (Antenna/Eye):** Detects resource gradients and signals.
+    4.  **Out-G (Exhaust):** Rocket nozzle, provides reactive thrust.
+    5.  **Out-M (Waste Chute):** Secretes armor plates or "Materia" briquettes.
+    6.  **Out-I (Signal Lamp):** Communicates vectors and blueprints to others.
+    7.  **Base Block (Chassis):** Structural skeleton, low power draw.
+*   **UI:** Analog gauges, trembling needles, and brass dials showing "Charge" and "Pressure."
+
+### IV. GAMEPLAY & PHYSICS REGISTRY
+*   **Resource #1 (Charge):** Electricity flows through the body graph. Resistance increases with distance from input nodes. 
+*   **Maintenance:** `Energy_Loss = sum(Block_Base_Costs) * Stress_Multiplier (Lever Length)`. 
+*   **Harmony Equation:** The body aims for $n=m$ (Rate of new block synthesis = Rate of old block decay). 
+*   **Survival Rules:** 
+    - Body < 5 blocks = Death (becomes Junk). 
+    - Loss of > 50% blocks = Collapse unless Charge is sufficient to reboot.
+*   **Environment:** 5 Gas types (G-- to G++). G-- is highly reactive/unstable (high energy/high damage); G++ is lazy/inert (low energy/safe).
+*   **Interactions:** 
+    - **Hunting:** Physical collision to break connections. 
+    - **Parasitism:** Docking to drain a host's Charge.
+    - **Symbiosis:** Voluntary sharing of specialized block functions.
+
+### V. CONFIGURATION (CONFIGURABLE EVERYTHING)
+The system must be driven by an external config (JSON/YAML) where all coefficients are modifiable:
+- `Mutation_Chance`: (Current: 0.05)
+- `Base_Maintenance`: (Current: 1.0)
+- `G_Reactivity_Scale`: (G--: 10.0 to G++: 0.1)
+- `Min_Body_Size`: (5)
+
+### VI. CURRENT DEVELOPMENT TASK
+**RESTORE ALL SYSTEMS AND PROCEED TO CODING:**
+1.  Initialize a 3D Physics environment (using a library like `PyBullet`, `Godot`, or a custom Matrix-based engine).
+2.  Implement the **Conductive Graph** logic: Calculate the Charge distribution across a 20-block body with one `In-G` at the tail and one `Out-G` at the head.
+3.  Calculate the **Lever Stress**: If the body is a 10-block long "arm," determine the `Charge` cost to move the tip against a 3D oil current.
+4.  Generate a **Mutation Event**: Simulate the growth of a new block that has a 10% chance to be a "Turbo-Exhaust" (High thrust, but leaks Charge).
+
+**Instruction to Agent:** Use the above data to build the core engine. All parameters must remain configurable. Begin by outputting the Architecture Plan for the Body-Graph system.
+
+*** 
+
+**Now, give this prompt to the agent of your choice, and it will have the full context of everything we discussed!**
