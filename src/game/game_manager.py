@@ -1,14 +1,14 @@
 """
-Obsidia-7 Harmony — Master Game Manager
-Orchestrates environment, physics world, organism ecosystem, and Doom Clock meta-progression.
+Obsidia-7 Harmony — Master Game Manager & God Overseer Engine
+Orchestrates autonomous multi-species evolution, God Sliders, tracking camera, and Ollama AI.
 """
 
 from typing import List, Dict, Any
-from ..core.organism import Organism
 from ..core.config_loader import load_config
 from .environment import Environment
 from .physics_world import PhysicsWorld
 from .doom_clock import DoomClockManager
+from .ecosystem import EcosystemManager
 
 
 class GameManager:
@@ -16,79 +16,71 @@ class GameManager:
 
     def __init__(self):
         self.config = load_config()
-        self.environment = Environment(bounds_size=60.0)
+        self.environment = Environment(bounds_size=70.0)
         self.physics_world = PhysicsWorld()
         self.doom_clock = DoomClockManager(initial_years=3000000)
+        self.ecosystem = EcosystemManager(self.config, self.environment, self.physics_world)
 
-        # Create Player Organism
-        self.player_organism = Organism("Aethel-Spark-Player", self.config)
-        self.player_entity = self.physics_world.add_organism(0, self.player_organism, (0.0, 0.0, 0.0))
+        # God Overseer Controls
+        self.simulation_speed: float = 1.0
+        self.mutation_rate_mult: float = 1.0
+        self.forced_gas_environment: str = "G_minus"
+        self.tracking_camera_species_id: int = 0
 
-        # Create AI Wild Species
-        self.ai_species: List[Organism] = []
-        self._spawn_ai_species()
+    def set_god_options(self, num_species: int = 2, speed: float = 1.0, gas_env: str = "G_minus", mutation_mult: float = 1.0):
+        """Updates God Overseer controls dynamically."""
+        self.simulation_speed = max(0.5, min(5.0, speed))
+        self.mutation_rate_mult = max(0.1, min(5.0, mutation_mult))
+        self.forced_gas_environment = gas_env
 
-    def _spawn_ai_species(self):
-        names = ["Vulcan-Chassis", "Zephyr-Filter", "Cobalt-Scraptron"]
-        for idx, name in enumerate(names, start=1):
-            ai_org = Organism(name, self.config)
-            self.ai_species.append(ai_org)
-            self.physics_world.add_organism(
-                idx,
-                ai_org,
-                (idx * 8.0 - 12.0, 0.0, idx * 6.0 - 9.0)
-            )
+        if num_species != self.ecosystem.num_active_species:
+            self.ecosystem.spawn_initial_ecosystem(num_species)
 
-    def tick_game_loop(self, player_steering_yaw: float = 0.0) -> Dict[str, Any]:
-        """Advances game loop by 1 tick."""
+    def tick_game_loop(self) -> Dict[str, Any]:
+        """Advances autonomous game loop by 1 tick."""
         # 1. Update Environment
         self.environment.update_environment()
 
-        # 2. Steer player organism
-        self.player_entity.yaw += player_steering_yaw
+        # 2. Physics & Movement Integration
+        self.physics_world.step(dt=0.1 * self.simulation_speed, oil_current=self.environment.oil_current_velocity)
 
-        # 3. Physics & Movement Integration
-        self.physics_world.step(dt=0.1, oil_current=self.environment.oil_current_velocity)
-
-        # 4. Check Materia collection collisions
+        # 3. Check Materia collection collisions
         self.physics_world.check_materia_collisions(self.environment.materia_nodes)
 
-        # 5. Step Thermodynamic engine for all organisms
-        player_gas = self.environment.get_gas_at_position(tuple(self.player_entity.pos))
-        event, player_snapshot = self.player_organism.step_simulation(player_gas)
-
-        ai_snapshots = []
-        for ai_org in self.ai_species:
-            _, ai_snap = ai_org.step_simulation("G_minus")
-            ai_snapshots.append(ai_snap)
-
-        # 6. Tick Doom Clock
-        all_sizes = [len(self.player_organism.nodes)] + [len(a.nodes) for a in self.ai_species]
-        avg_size = sum(all_sizes) / len(all_sizes)
-        self.doom_clock.tick_cycle(
-            active_species_count=1 + len(self.ai_species),
-            average_size=avg_size,
-            gas_stability=0.8
+        # 4. Autonomous Ecosystem Step for All Species (2 or 4)
+        species_snapshots = self.ecosystem.update_autonomous_ecosystem(
+            simulation_speed=self.simulation_speed,
+            mutation_rate_mult=self.mutation_rate_mult
         )
 
-        # Full Game State Snapshot
+        # 5. Tick Doom Clock
+        all_sizes = [len(entity.organism.nodes) for entity in self.ecosystem.species_entities.values()]
+        avg_size = sum(all_sizes) / len(all_sizes) if all_sizes else 5.0
+        self.doom_clock.tick_cycle(
+            active_species_count=len(self.ecosystem.species_entities),
+            average_size=avg_size,
+            gas_stability=0.85
+        )
+
+        # Full Game State Snapshot for Web3D Spectator HUD
         return {
+            "god_controls": {
+                "simulation_speed": self.simulation_speed,
+                "mutation_rate_mult": self.mutation_rate_mult,
+                "forced_gas_env": self.forced_gas_environment,
+                "num_species": self.ecosystem.num_active_species,
+                "tracking_camera_id": self.tracking_camera_species_id
+            },
             "environment": self.environment.to_dict(),
             "doom_clock": self.doom_clock.to_dict(),
-            "player": {
-                "entity_id": self.player_entity.entity_id,
-                "pos": [round(p, 2) for p in self.player_entity.pos],
-                "vel": [round(v, 2) for v in self.player_entity.vel],
-                "yaw": round(self.player_entity.yaw, 2),
-                "blueprint": self.player_organism.to_json_blueprint(),
-                "snapshot": player_snapshot
-            },
-            "ai_organisms": [
+            "species_list": [
                 {
-                    "entity_id": entity_id,
+                    "species_id": s_id,
+                    "species_name": entity.organism.species_name,
                     "pos": [round(p, 2) for p in entity.pos],
-                    "species": entity.organism.species_name,
-                    "size": len(entity.organism.nodes)
-                } for entity_id, entity in self.physics_world.entities.items() if entity_id != 0
+                    "yaw": round(entity.yaw, 2),
+                    "blueprint": entity.organism.to_json_blueprint(),
+                    "snapshot": snapshot
+                } for (s_id, entity), snapshot in zip(self.ecosystem.species_entities.items(), species_snapshots)
             ]
         }

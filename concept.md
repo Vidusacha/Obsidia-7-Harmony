@@ -1,17 +1,21 @@
 # Obsidia-7 Harmony — Concept & Vision
 
 ## Executive Summary
-**Project Obsidia-7 Harmony** is a 3D thermodynamic evolution simulator. Set on a planetary junkyard abandoned by "The Inventors", player-guided or autonomous mechanical organisms evolve from a primitive single-block "Primal Spark" into complex multi-block organisms seeking **Harmony** — a stable dynamic thermodynamic state resilient to >70% environmental shifts.
+**Project Obsidia-7 Harmony** is a 3D autonomous thermodynamic evolution simulator and spectator ecosystem ("Digital Aquarium / God Overseer Mode"). Set on a planetary junkyard abandoned by "The Inventors", 2 to 4 distinct, procedurally generated mechanical species evolve autonomously from primitive "Primal Sparks" seeking **Harmony** — a dynamic thermodynamic state resilient to >70% environmental shifts.
 
 ## Narrative & Lore
 - **The World**: Obsidia-7, a planetary junkyard of oil oceans, gas-filled atmospheres, and scrap mountains abandoned by an ancient precursor race known as "The Inventors".
 - **The Spark**: High UV radiation from the local dying star, **Helios-Omega**, ignited an "electric broth" of discarded metallic parts, establishing decentralized, modular mechanical life.
 - **The Doom Clock**: Helios-Omega will explode into a supernova in **3 million years**. To survive, mechanical life must evolve planetary energy shielding or interstellar space-faring capabilities before time runs out.
-- **The Philosophy of Life**: Decentralized & Modular. There is no central "brain". Life is a collective property of interconnected truncated octahedra modules. If a body snaps in half, both fragments—if larger than the minimal viable size (5 blocks)—continue to live independently.
+- **Autonomous Evolution**: Life is decentralized & modular. There is no manual player control; species autonomously navigate gas gradients, harvest Materia scrap, hunt/compete, and synthesize/decay modules ($n=m$).
 
 ## Core Pillars & Values
-1. **Thermodynamic Harmony**: Survival is not static; it is a dynamic balance ($n = m$, synthesis rate = decay rate) governed by energy intake, electrical resistance, and thermal entropy dissipation.
-2. **"Riveting-Punk" Aesthetics**: High-contrast, tactile mechanical visual language (Robots 2005 / Meet the Robinsons). Polished brass, weathered copper, rivets, oily reflections, and glowing vacuum tubes.
-3. **Configurable Everything**: All simulation constants (mutation rates, maintenance multipliers, gas reactivity coefficients, graph resistance) are strictly driven by external YAML/JSON configurations.
-4. **Decoupled Architecture**: High-speed Headless Simulation Engine decoupled from 3D PBR Visualizers.
-5. **Generative Local Intelligence**: Integration with local Ollama LLMs (`qwen3.5-abliterated`) for procedural blueprint synthesis and evolutionary species logs.
+1. **Autonomous Ecosystem Spectator Mode**: A visual "Digital Aquarium" experience where users oversee evolving digital species with Overseer God Controls (speed, gas storms, mutation rates).
+2. **Distinct Species Visual Identities**: 4 distinct species palettes:
+   - **Brass-Aurum (Alpha)**: Polished Brass + Cyan Glowing Filaments.
+   - **Copper-Rubrum (Beta)**: Weathered Copper + Crimson Glowing Filaments.
+   - **Steel-Azure (Gamma)**: Steel Zinc + Emerald Glowing Filaments.
+   - **Bronze-Purpura (Delta)**: Vintage Bronze + Violet Glowing Filaments.
+3. **Dynamic VFX & Kinetics**: Welding sparks on module synthesis ($n$), glowing circuit edges on Kirchhoff Joule heating overload ($I^2 R$), reactive thrust bubble шлейфы, and scrap debris on module decay ($m$).
+4. **Configurable Everything**: All physics, gas reactivity, and mutation coefficients are strictly driven by external configuration files.
+5. **Local Generative Intelligence**: Integration with local Ollama LLMs (`qwen:latest`) for real-time procedural species evolution ticker logs.

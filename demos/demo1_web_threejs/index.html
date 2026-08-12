@@ -3,15 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Obsidia-7 Harmony — 3D Thermodynamic Evolution Game</title>
+    <title>Obsidia-7 Harmony — Autonomous Ecosystem Simulator & Spectator UI</title>
     <style>
         :root {
-            --bg-dark: #0a0b0e;
+            --bg-dark: #07080b;
             --brass-gold: #d4af37;
             --copper-accent: #b87333;
             --cyan-glow: #00f0ff;
-            --orange-heat: #ff4500;
-            --panel-bg: rgba(16, 18, 24, 0.90);
+            --crimson-glow: #ff3344;
+            --purple-glow: #aa00ff;
+            --panel-bg: rgba(14, 16, 22, 0.92);
         }
         
         * {
@@ -55,17 +56,17 @@
         .header-panel {
             background: var(--panel-bg);
             border: 2px solid var(--brass-gold);
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.35), inset 0 0 12px rgba(0, 0, 0, 0.85);
+            box-shadow: 0 0 22px rgba(212, 175, 55, 0.4), inset 0 0 14px rgba(0, 0, 0, 0.9);
             border-radius: 8px;
             padding: 14px 20px;
-            max-width: 520px;
+            max-width: 540px;
             pointer-events: auto;
             backdrop-filter: blur(10px);
         }
 
         .header-panel h1 {
             color: var(--brass-gold);
-            font-size: 1.25rem;
+            font-size: 1.3rem;
             letter-spacing: 2px;
             text-transform: uppercase;
             margin-bottom: 4px;
@@ -77,7 +78,7 @@
         .doom-clock-bar {
             display: flex;
             justify-content: space-between;
-            background: rgba(0,0,0,0.6);
+            background: rgba(0,0,0,0.7);
             border: 1px solid var(--copper-accent);
             border-radius: 4px;
             padding: 6px 10px;
@@ -86,7 +87,7 @@
         }
 
         .doom-years {
-            color: var(--orange-heat);
+            color: #ff4500;
             font-weight: bold;
             font-family: monospace;
         }
@@ -96,83 +97,49 @@
             font-weight: bold;
         }
 
-        /* Analog Gauges Panel */
-        .gauges-container {
+        /* Species Legend Bar */
+        .species-legend {
             display: flex;
-            gap: 15px;
-            pointer-events: auto;
+            gap: 8px;
+            margin-top: 8px;
+            font-size: 0.75rem;
         }
 
-        .gauge-card {
-            background: radial-gradient(circle, #1a1d24 0%, #0d0e12 100%);
-            border: 3px solid var(--brass-gold);
-            border-radius: 50%;
-            width: 125px;
-            height: 125px;
-            position: relative;
-            box-shadow: 0 6px 18px rgba(0,0,0,0.9), inset 0 0 12px rgba(212,175,55,0.4);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .gauge-glass {
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            border-radius: 50%;
-            background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 50%);
-            pointer-events: none;
-        }
-
-        .gauge-title {
-            font-size: 0.6rem;
-            color: var(--brass-gold);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-top: 14px;
-        }
-
-        .gauge-value {
-            font-size: 1.05rem;
+        .legend-tag {
+            padding: 3px 7px;
+            border-radius: 4px;
+            border: 1px solid #444;
             font-weight: bold;
-            color: #fff;
-            margin-top: 2px;
-            font-family: monospace;
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
 
-        .gauge-needle {
-            position: absolute;
-            width: 3px;
-            height: 38px;
-            background: #ff3333;
-            bottom: 50%;
-            left: calc(50% - 1.5px);
-            transform-origin: bottom center;
-            transform: rotate(-60deg);
-            transition: transform 0.1s ease-out;
-            box-shadow: 0 0 5px rgba(255, 51, 51, 0.8);
-        }
-
-        .gauge-pivot {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background: var(--brass-gold);
+        .dot {
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
-            border: 2px solid #000;
+            display: inline-block;
         }
 
-        /* Controls Panel */
+        /* Controls Panel (God Mode Overseer) */
         .controls-panel {
             background: var(--panel-bg);
             border: 2px solid var(--copper-accent);
             border-radius: 8px;
             padding: 12px 15px;
-            max-width: 440px;
+            max-width: 480px;
             pointer-events: auto;
             align-self: flex-end;
             backdrop-filter: blur(10px);
+        }
+
+        .god-title {
+            font-size: 0.82rem;
+            color: var(--brass-gold);
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-transform: uppercase;
         }
 
         .btn-grid {
@@ -205,7 +172,7 @@
         .ai-log-box {
             margin-top: 8px;
             padding: 6px 10px;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.75);
             border-left: 3px solid var(--brass-gold);
             font-size: 0.75rem;
             color: #d0d8e2;
@@ -227,59 +194,41 @@
         <!-- Header Panel -->
         <div class="header-panel">
             <h1>⚙️ OBSIDIA-7 HARMONY</h1>
+            <p>Autonomous Thermodynamic Ecosystem Simulator & Spectator Mode</p>
             <div class="doom-clock-bar">
                 <div>💥 HELIOS-OMEGA: <span class="doom-years" id="doom-years">2,995,000 YRS</span></div>
-                <div>DYNAMIC HARMONY: <span class="harmony-val" id="harmony-val">84.5%</span></div>
+                <div>DYNAMIC HARMONY: <span class="harmony-val" id="harmony-val">86.2%</span></div>
+            </div>
+            <div class="species-legend" id="species-legend">
+                <!-- Species badges injected dynamically -->
             </div>
             <div class="ai-log-box" id="ai-log">
-                [Log]: Game Engine active. Use Steering buttons or A/D keys to pilot specimen.
+                [Log]: Autonomous Ecosystem active. Toggle 2 vs 4 Species or change Time Speed.
             </div>
         </div>
 
-        <!-- Gauges and Controls Bottom Bar -->
-        <div style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%;">
-            <!-- Gauges -->
-            <div class="gauges-container">
-                <div class="gauge-card">
-                    <div class="gauge-glass"></div>
-                    <div class="gauge-needle" id="needle-charge"></div>
-                    <div class="gauge-pivot"></div>
-                    <div class="gauge-title">CHARGE</div>
-                    <div class="gauge-value" id="val-charge">50.0V</div>
-                </div>
-
-                <div class="gauge-card">
-                    <div class="gauge-glass"></div>
-                    <div class="gauge-needle" id="needle-pressure"></div>
-                    <div class="gauge-pivot"></div>
-                    <div class="gauge-title">ENTROPY</div>
-                    <div class="gauge-value" id="val-pressure">2.0BAR</div>
-                </div>
-            </div>
-
-            <!-- Controls Panel -->
-            <div class="controls-panel">
-                <div style="font-size: 0.8rem; color: var(--brass-gold); font-weight: bold;">PILOT CONTROLS</div>
-                <div class="btn-grid">
-                    <button class="punk-btn" onclick="steer(-0.25)">↩️ Steer Left</button>
-                    <button class="punk-btn" onclick="steer(0.25)">↪️ Steer Right</button>
-                    <button class="punk-btn" onclick="stepTick()">⏩ Thrust Step</button>
-                    <button class="punk-btn" onclick="toggleAutoLoop()" id="btn-autoloop">▶️ Auto Play</button>
-                    <button class="punk-btn" onclick="queryOllamaAI()">🤖 Ollama Log</button>
-                    <button class="punk-btn" onclick="resetState()">♻️ Reset</button>
-                </div>
+        <!-- Controls Panel (God Overseer) -->
+        <div class="controls-panel">
+            <div class="god-title">👑 OVERSEER GOD CONTROLS</div>
+            <div class="btn-grid">
+                <button class="punk-btn" onclick="toggleSpeciesCount()" id="btn-species-count">👥 2 Species</button>
+                <button class="punk-btn" onclick="toggleSpeed()" id="btn-speed">⚡ Speed 1x</button>
+                <button class="punk-btn" onclick="toggleGasStorm()" id="btn-gas">🌪️ G- Normal</button>
+                <button class="punk-btn" onclick="toggleAutoPlay()" id="btn-autoloop">⏸️ Pause</button>
+                <button class="punk-btn" onclick="focusNextSpecies()">🎥 Focus Cam</button>
+                <button class="punk-btn" onclick="queryOllamaAI()">🤖 Ollama Log</button>
             </div>
         </div>
     </div>
 
     <script>
-        // --- 1. Scene Setup ---
+        // --- 1. Scene & Lighting Setup ---
         const container = document.getElementById('webgl-container');
         const scene = new THREE.Scene();
-        scene.fog = new THREE.FogExp2(0x0a0b0e, 0.025);
+        scene.fog = new THREE.FogExp2(0x07080b, 0.022);
 
-        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 200);
-        camera.position.set(0, 15, 25);
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 250);
+        camera.position.set(0, 22, 32);
 
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
@@ -292,42 +241,38 @@
         controls.enableDamping = true;
         controls.dampingFactor = 0.05;
 
-        // --- 2. Lighting & Environment Elements ---
-        const ambientLight = new THREE.AmbientLight(0x222530, 2.0);
+        // Lighting
+        const ambientLight = new THREE.AmbientLight(0x222530, 2.2);
         scene.add(ambientLight);
 
-        const brassSpotLight = new THREE.SpotLight(0xd4af37, 4.0);
-        brassSpotLight.position.set(15, 30, 15);
-        brassSpotLight.castShadow = true;
-        scene.add(brassSpotLight);
+        const spotLight = new THREE.SpotLight(0xd4af37, 4.5);
+        spotLight.position.set(20, 35, 20);
+        spotLight.castShadow = true;
+        scene.add(spotLight);
 
-        const oceanGrid = new THREE.GridHelper(80, 40, 0xb87333, 0x1f160e);
-        oceanGrid.position.y = -1.5;
+        const oceanGrid = new THREE.GridHelper(90, 45, 0xb87333, 0x1f160e);
+        oceanGrid.position.y = -2.0;
         scene.add(oceanGrid);
 
-        // --- 3. Materials ---
-        const brassMaterial = new THREE.MeshStandardMaterial({ color: 0xd4af37, metalness: 0.85, roughness: 0.25 });
-        const copperMaterial = new THREE.MeshStandardMaterial({ color: 0xb87333, metalness: 0.9, roughness: 0.4 });
-        const cyanGlowMaterial = new THREE.MeshBasicMaterial({ color: 0x00f0ff, wireframe: true });
+        // --- 2. Materials & Meshes ---
+        const blockGeom = new THREE.BoxGeometry(0.85, 0.85, 0.85);
         const materiaMaterial = new THREE.MeshStandardMaterial({ color: 0xffd700, metalness: 0.9, roughness: 0.1 });
 
-        const blockGeom = new THREE.BoxGeometry(0.85, 0.85, 0.85);
-        const playerGroup = new THREE.Group();
-        scene.add(playerGroup);
-
-        const aiGroup = new THREE.Group();
-        scene.add(aiGroup);
+        const speciesGroup = new THREE.Group();
+        scene.add(speciesGroup);
 
         const envGroup = new THREE.Group();
         scene.add(envGroup);
 
-        // --- 4. Live Game Loop & API Bridge ---
-        let autoLoopTimer = null;
-        let isAutoPlaying = false;
-        let currentSteering = 0.0;
-        let chargeValue = 50.0;
-        let entropyValue = 2.0;
+        // --- 3. God Mode Options & State ---
+        let numSpecies = 2;
+        let speedMult = 1.0;
+        let currentGas = "G_minus";
+        let isAutoPlaying = true;
+        let autoPlayTimer = null;
+        let focusedSpeciesIndex = 0;
 
+        // Fetch live state from backend
         async function fetchGameState() {
             try {
                 const resp = await fetch('http://localhost:8000/api/game_state');
@@ -336,146 +281,173 @@
                     renderGameState(data);
                 }
             } catch (err) {
-                renderStandaloneFallback();
+                // Standalone offline preview
             }
         }
 
-        async function stepTick() {
+        async function stepAutonomousCycle() {
             try {
-                const resp = await fetch('http://localhost:8000/api/game_tick', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ steering_yaw: currentSteering })
-                });
+                const resp = await fetch('http://localhost:8000/api/game_tick', { method: 'POST' });
                 if (resp.ok) {
                     const data = await resp.json();
                     renderGameState(data);
                 }
             } catch (err) {
-                stepStandaloneFallback();
+                // Standalone step
             }
-            currentSteering = 0.0;
         }
 
-        function steer(dir) {
-            currentSteering += dir;
-            stepTick();
+        async function updateGodSettings() {
+            try {
+                const resp = await fetch('http://localhost:8000/api/god_setting', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        num_species: numSpecies,
+                        speed: speedMult,
+                        gas_env: currentGas
+                    })
+                });
+                if (resp.ok) {
+                    const data = await resp.json();
+                    renderGameState(data);
+                }
+            } catch (err) {}
         }
 
         function renderGameState(data) {
-            // Update Doom Clock UI
+            // Update Doom Clock
             if (data.doom_clock) {
                 document.getElementById('doom-years').innerText = data.doom_clock.years_formatted;
                 document.getElementById('harmony-val').innerText = `${data.doom_clock.harmony_index}%`;
             }
 
-            // Render Player Organism
-            if (data.player) {
-                const p = data.player;
-                chargeValue = p.snapshot.charge || 50.0;
-                entropyValue = p.snapshot.entropy || 2.0;
-                playerGroup.position.set(p.pos[0], p.pos[1], p.pos[2]);
-                playerGroup.rotation.y = p.yaw;
+            // Render Species Organisms
+            while (speciesGroup.children.length > 0) speciesGroup.remove(speciesGroup.children[0]);
+            
+            const speciesList = data.species_list || [];
+            const legendContainer = document.getElementById('species-legend');
+            legendContainer.innerHTML = '';
 
-                // Build blocks
-                while (playerGroup.children.length > 0) playerGroup.remove(playerGroup.children[0]);
-                const blocks = (p.blueprint && p.blueprint.blocks) || [];
+            speciesList.forEach((sp, idx) => {
+                const theme = (sp.snapshot && sp.snapshot.theme) || { metal_color: 0xd4af37, glow_color: 0x00f0ff };
+                
+                // Add to HUD Legend
+                const hexStr = `#${theme.glow_color.toString(16).padStart(6, '0')}`;
+                legendContainer.innerHTML += `
+                    <div class="legend-tag" style="border-color: ${hexStr};">
+                        <span class="dot" style="background: ${hexStr};"></span>
+                        ${sp.species_name} (${sp.snapshot.num_blocks}B)
+                    </div>
+                `;
+
+                // Build 3D Mesh
+                const spGroup = new THREE.Group();
+                spGroup.position.set(sp.pos[0], sp.pos[1], sp.pos[2]);
+                spGroup.rotation.y = sp.yaw;
+
+                const mat = new THREE.MeshStandardMaterial({
+                    color: theme.metal_color,
+                    metalness: theme.metalness || 0.85,
+                    roughness: theme.roughness || 0.3
+                });
+
+                const wireMat = new THREE.MeshBasicMaterial({
+                    color: theme.glow_color,
+                    wireframe: true
+                });
+
+                const blocks = (sp.blueprint && sp.blueprint.blocks) || [];
                 blocks.forEach(b => {
-                    const mat = b.type === "In-G" ? copperMaterial : brassMaterial;
                     const mesh = new THREE.Mesh(blockGeom, mat);
                     mesh.position.set(b.bcc[0]*0.9, b.bcc[1]*0.9, b.bcc[2]*0.9);
-                    const wire = new THREE.Mesh(blockGeom, cyanGlowMaterial);
+                    
+                    const wire = new THREE.Mesh(blockGeom, wireMat);
                     wire.scale.set(1.02, 1.02, 1.02);
                     mesh.add(wire);
-                    playerGroup.add(mesh);
+                    
+                    spGroup.add(mesh);
                 });
-            }
+
+                speciesGroup.add(spGroup);
+
+                // Focus Camera on selected species
+                if (idx === focusedSpeciesIndex) {
+                    controls.target.lerp(new THREE.Vector3(sp.pos[0], sp.pos[1], sp.pos[2]), 0.1);
+                }
+            });
 
             // Render Environment (Gas Clouds & Materia Nodes)
             if (data.environment) {
                 while (envGroup.children.length > 0) envGroup.remove(envGroup.children[0]);
                 
-                // Gas clouds
                 (data.environment.gas_clouds || []).forEach(gc => {
                     const color = gc.type === "G_minus_minus" ? 0xff4500 : 0x00f0ff;
-                    const cloudMat = new THREE.MeshBasicMaterial({ color: color, wireframe: true, transparent: true, opacity: 0.25 });
+                    const cloudMat = new THREE.MeshBasicMaterial({ color: color, wireframe: true, transparent: true, opacity: 0.2 });
                     const cloudMesh = new THREE.Mesh(new THREE.SphereGeometry(gc.radius, 12, 12), cloudMat);
                     cloudMesh.position.set(gc.pos[0], gc.pos[1], gc.pos[2]);
                     envGroup.add(cloudMesh);
                 });
 
-                // Materia scrap nodes
                 (data.environment.materia_nodes || []).forEach(mn => {
-                    const matMesh = new THREE.Mesh(new THREE.OctahedronGeometry(0.5), materiaMaterial);
+                    const matMesh = new THREE.Mesh(new THREE.OctahedronGeometry(0.45), materiaMaterial);
                     matMesh.position.set(mn.pos[0], mn.pos[1], mn.pos[2]);
                     envGroup.add(matMesh);
                 });
             }
-
-            updateGauges();
         }
 
-        function renderStandaloneFallback() {
-            chargeValue = 50.0;
-            entropyValue = 2.0;
-            updateGauges();
+        // --- God Controls Handlers ---
+        function toggleSpeciesCount() {
+            numSpecies = numSpecies === 2 ? 4 : 2;
+            document.getElementById('btn-species-count').innerText = `👥 ${numSpecies} Species`;
+            updateGodSettings();
         }
 
-        function stepStandaloneFallback() {
-            chargeValue = Math.min(100.0, chargeValue + 4.0);
-            entropyValue = Math.max(0.5, entropyValue - 0.2);
-            updateGauges();
+        function toggleSpeed() {
+            if (speedMult === 1.0) speedMult = 2.0;
+            else if (speedMult === 2.0) speedMult = 4.0;
+            else speedMult = 1.0;
+            document.getElementById('btn-speed').innerText = `⚡ Speed ${speedMult}x`;
+            updateGodSettings();
+        }
+
+        function toggleGasStorm() {
+            currentGas = currentGas === "G_minus" ? "G_minus_minus" : "G_minus";
+            document.getElementById('btn-gas').innerText = currentGas === "G_minus_minus" ? "🌪️ G-- Storm" : "🌪️ G- Normal";
+            updateGodSettings();
+        }
+
+        function toggleAutoPlay() {
+            isAutoPlaying = !isAutoPlaying;
+            document.getElementById('btn-autoloop').innerText = isAutoPlaying ? "⏸️ Pause" : "▶️ Play";
+            if (isAutoPlaying) startAutoPlay();
+            else clearInterval(autoPlayTimer);
+        }
+
+        function focusNextSpecies() {
+            focusedSpeciesIndex = (focusedSpeciesIndex + 1) % numSpecies;
         }
 
         async function queryOllamaAI() {
-            document.getElementById('ai-log').innerText = "[Ollama AI]: Querying local model at http://localhost:11434...";
+            document.getElementById('ai-log').innerText = "[Ollama AI]: Querying model at http://localhost:11434...";
             try {
                 const resp = await fetch('http://localhost:8000/api/ollama_mutate', { method: 'POST' });
                 if (resp.ok) {
                     const data = await resp.json();
-                    document.getElementById('ai-log').innerText = `[AI Species Report]: "${data.ai_report}"`;
+                    document.getElementById('ai-log').innerText = `[AI Ticker]: "${data.ai_report}"`;
                 }
             } catch (err) {
-                document.getElementById('ai-log').innerText = "[Ollama Report]: Specimen synthesized twin Turbo-Exhaust nozzles for spacefaring acceleration.";
+                document.getElementById('ai-log').innerText = "[Ollama Report]: Species Brass-Aurum synthesized twin Out-G nozzles to evade Copper-Rubrum.";
             }
         }
 
-        function toggleAutoLoop() {
-            isAutoPlaying = !isAutoPlaying;
-            const btn = document.getElementById('btn-autoloop');
-            if (isAutoPlaying) {
-                btn.innerText = "⏸️ Pause";
-                autoLoopTimer = setInterval(stepTick, 250);
-            } else {
-                btn.innerText = "▶️ Auto Play";
-                clearInterval(autoLoopTimer);
-            }
+        function startAutoPlay() {
+            clearInterval(autoPlayTimer);
+            autoPlayTimer = setInterval(stepAutonomousCycle, 200);
         }
 
-        function updateGauges() {
-            const chargeAngle = -60 + (chargeValue / 100) * 120;
-            const pressureAngle = -60 + (entropyValue / 25) * 120;
-
-            document.getElementById('needle-charge').style.transform = `rotate(${chargeAngle}deg)`;
-            document.getElementById('needle-pressure').style.transform = `rotate(${pressureAngle}deg)`;
-
-            document.getElementById('val-charge').innerText = `${chargeValue.toFixed(1)}V`;
-            document.getElementById('val-pressure').innerText = `${entropyValue.toFixed(1)}BAR`;
-        }
-
-        function resetState() {
-            if (isAutoPlaying) toggleAutoLoop();
-            fetchGameState();
-        }
-
-        // --- 5. Keybindings (A/D or Left/Right Arrow steering) ---
-        window.addEventListener('keydown', (e) => {
-            if (e.key === 'a' || e.key === 'A' || e.key === 'ArrowLeft') steer(-0.2);
-            if (e.key === 'd' || e.key === 'D' || e.key === 'ArrowRight') steer(0.2);
-            if (e.key === ' ') stepTick();
-        });
-
-        // --- 6. Animation Loop ---
+        // --- 4. Animation Loop ---
         let clock = new THREE.Clock();
 
         function animate() {
@@ -485,7 +457,7 @@
         }
 
         animate();
-        fetchGameState();
+        startAutoPlay();
 
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;

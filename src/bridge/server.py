@@ -1,6 +1,6 @@
 """
 Obsidia-7 Harmony — Local HTTP Engine Server & Live Game Bridge
-Serves Web3D Three.js game interface and exposes full 3D simulation REST APIs.
+Serves Web3D Three.js Spectator interface and exposes God Overseer REST APIs.
 """
 
 import http.server
@@ -35,7 +35,7 @@ class ObsidiaGameHTTPHandler(http.server.SimpleHTTPRequestHandler):
 
     def do_GET(self):
         if self.path == "/api/game_state" or self.path == "/api/organism":
-            state = game.tick_game_loop(player_steering_yaw=0.0)
+            state = game.tick_game_loop()
             self.send_json_response(state)
         elif self.path == "/" or self.path == "/index.html":
             self.path = "/demos/demo1_web_threejs/index.html"
@@ -45,30 +45,36 @@ class ObsidiaGameHTTPHandler(http.server.SimpleHTTPRequestHandler):
 
     def do_POST(self):
         if self.path == "/api/game_tick" or self.path == "/api/step":
-            # Parse steering input if available
-            steering_yaw = 0.0
+            state = game.tick_game_loop()
+            self.send_json_response(state)
+
+        elif self.path == "/api/god_setting":
             content_length = int(self.headers.get('Content-Length', 0))
             if content_length > 0:
                 body_bytes = self.rfile.read(content_length)
                 try:
                     body = json.loads(body_bytes.decode('utf-8'))
-                    steering_yaw = body.get('steering_yaw', 0.0)
+                    num_species = body.get('num_species', 2)
+                    speed = body.get('speed', 1.0)
+                    gas_env = body.get('gas_env', 'G_minus')
+                    mutation_mult = body.get('mutation_mult', 1.0)
+                    game.set_god_options(num_species, speed, gas_env, mutation_mult)
                 except Exception:
                     pass
 
-            state = game.tick_game_loop(player_steering_yaw=steering_yaw)
+            state = game.tick_game_loop()
             self.send_json_response(state)
 
         elif self.path == "/api/ollama_mutate":
-            org = game.player_organism
+            active_species = [e.organism.species_name for e in game.ecosystem.species_entities.values()]
             prompt = (
                 f"You are the Lead Systems Architect AI for Obsidia-7 Harmony. "
-                f"Player specimen '{org.species_name}' has evolved to {len(org.nodes)} blocks: {[n.block_type for n in org.nodes]}. "
+                f"An autonomous ecosystem of {len(active_species)} species ({active_species}) is evolving in oil ocean. "
                 f"Doom Clock: {game.doom_clock.remaining_years:,} years remaining until Helios-Omega supernova. "
-                f"Describe its emergent Riveting-Punk adaptation and spacefaring capability progress in 2 sentences."
+                f"Describe their dynamic interaction and Riveting-Punk species adaptation in 2 short sentences."
             )
             report = query_local_ollama(prompt)
-            self.send_json_response({"species": org.species_name, "ai_report": report})
+            self.send_json_response({"ai_report": report})
         else:
             self.send_error(404, "Endpoint not found")
 
@@ -101,7 +107,7 @@ def query_local_ollama(prompt: str, model_name: str = "qwen:latest") -> str:
             result = json.loads(resp.read().decode('utf-8'))
             return result.get('response', '').strip()
     except Exception:
-        return "[Local Ollama Engine]: Organism synthesized reinforced brass cooling vanes and rocket exhaust nozzles."
+        return "[Local Ollama Engine]: Species Brass-Aurum developed twin reactive nozzles to evade Copper-Rubrum predation."
 
 
 def run_server():
@@ -109,9 +115,8 @@ def run_server():
     
     with socketserver.TCPServer(("", PORT), ObsidiaGameHTTPHandler) as httpd:
         print("\n" + "=" * 65)
-        print(" ⚙️ OBSIDIA-7 HARMONY — Game Engine Server Active")
-        print(f" Live Web3D Game: http://localhost:{PORT}")
-        print(f" Game State API: http://localhost:{PORT}/api/game_state")
+        print(" ⚙️ OBSIDIA-7 HARMONY — Spectator Ecosystem Server Active")
+        print(f" Live Web3D Spectator UI: http://localhost:{PORT}")
         print("=" * 65 + "\n")
         httpd.serve_forever()
 

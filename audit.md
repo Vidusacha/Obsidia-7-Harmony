@@ -6,31 +6,37 @@
 - **Date**: 2026-08-12
 - **Status**: Approved
 - **Context**: Truncated octahedra have 14 faces (8 hexagons, 6 squares). Continuous 3D rigid body constraints lead to floating-point drift and heavy physics solver overhead.
-- **Decision**: Docking positions will map to a Body-Centered Cubic (BCC) spatial grid with discrete quaternions for the 14 face normals. 3D physics engines will handle macro collisions and hydrodynamics only.
+- **Decision**: Docking positions map to Body-Centered Cubic (BCC) spatial grid with discrete quaternions for 14 face normals.
 
 ### ADR-002: Kirchhoff Electrical Network Solver ($L \cdot V = I$)
 - **Date**: 2026-08-12
 - **Status**: Approved
 - **Context**: Simple graph distance (Dijkstra) ignores parallel electrical paths across multiple intake nodes.
-- **Decision**: Model electrical conduction as a Kirchhoff Laplacian circuit ($L \cdot V = I$), calculating exact node voltage potentials and $I^2 R$ Joule heating. Overloaded edges visually glow orange-red.
+- **Decision**: Model electrical conduction as Kirchhoff Laplacian circuit ($L \cdot V = I$), calculating node voltages and $I^2 R$ Joule heating. Overloaded edges visually glow orange-red.
 
 ### ADR-003: Decoupled Headless Simulation Core
 - **Date**: 2026-08-12
 - **Status**: Approved
 - **Context**: Need high-speed evolutionary simulation without rendering overhead.
-- **Decision**: Decouple the core engine (`ObsidiaEngine`) into a pure Python data model that can run headless for fast evolution or connect to 3D visualizers.
+- **Decision**: Decouple core engine (`ObsidiaEngine`) into pure Python data model that can run headless for fast evolution or connect to 3D visualizers.
 
 ### ADR-004: Local Ollama LLM Integration (`http://localhost:11434`)
 - **Date**: 2026-08-12
 - **Status**: Approved
 - **Context**: User requested using local Ollama anytime to save API tokens and generate evolutionary content.
-- **Decision**: Use local Ollama (`qwen:latest` / `qwen3.5-abliterated:27b`) for offline YAML configuration synthesis, procedural creature blueprint generation, and species evolutionary journal generation.
+- **Decision**: Use local Ollama (`qwen:latest`) for offline YAML configuration synthesis, procedural creature blueprint generation, and species evolutionary journal generation.
 
 ### ADR-005: Visualizer Engine Stack Selection — Web3D (Three.js / WebGL)
 - **Date**: 2026-08-12
 - **Status**: Approved by EV
 - **Context**: Evaluated 3 technology stack demos (Web3D Three.js, Python Native ASCII/Plot, Headless Ollama).
-- **Decision**: Formally selected **Web3D (Three.js / WebGL + HTML5/CSS Gauges HUD)** for primary rendering. Connects to Python Headless Core and Local Ollama via local HTTP/WebSocket bridge.
+- **Decision**: Formally selected **Web3D (Three.js / WebGL + HTML5/CSS Gauges HUD)** for primary rendering.
+
+### ADR-006: Concept Shift — Autonomous Ecosystem Spectator Mode (God Mode / Digital Aquarium)
+- **Date**: 2026-08-12
+- **Status**: Approved by EV
+- **Context**: Shifted from manual player steering to a pure autonomous evolution simulator where 2 (and 4) distinct species interact, hunt, symbiose, and evolve automatically.
+- **Decision**: Implemented 4 distinct species visual identities (Brass, Copper, Steel, Bronze), autonomous navigation, predation mechanics, tracking camera, and God Overseer controls.
 
 ---
 

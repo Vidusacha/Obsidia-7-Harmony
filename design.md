@@ -3,30 +3,23 @@
 ## Visual Style: "Riveting-Punk" (Atom-Punk / Retro-Futurism)
 Informed by *Robots (2005)* and *Meet the Robinsons*, the visual language avoids sleek modern plastic or synthetic organics. Everything is metallic, heavy, industrial, and tactile.
 
-### Material Palette & PBR Properties
-- **Polished Brass**: High metallic value (0.9), low roughness (0.2), warm golden specular highlights. Used for primary module casings and structural framing.
-- **Weathered Copper**: Metallic (0.85), roughness (0.4–0.6) with green/cyan patina in crevices. Used for joint couplings and high-wear surfaces.
-- **Rivets & Clockwork**: Heavy copper and steel rivets, visible internal meshing clockwork gears through glass or mesh cutouts.
-- **Vacuum Tubes & Filaments**: Glowing neon-blue filaments for electrical Charge conduction; glowing orange-red for thermal overloads ($I^2 R$ Joule heating).
-- **Oily Atmosphere & Water**: High-reflectivity oil oceans, volumetric gas clouds (G-- to G++), dark metallic junkyard backgrounds with soft bokeh highlights.
+## Multi-Species Visual Identities (4 Palettes)
+1. **Species #0: Brass-Aurum (Alpha)**: Polished Golden Brass (`#d4af37`), Cyan Glowing Filaments (`#00f0ff`), metallic roughness 0.25.
+2. **Species #1: Copper-Rubrum (Beta)**: Weathered Copper with Patina (`#b87333`), Crimson Glowing Filaments (`#ff3344`), metallic roughness 0.45.
+3. **Species #2: Steel-Azure (Gamma)**: Steel Zinc (`#8a9ea7`), Emerald Glowing Filaments (`#00ffaa`), metallic roughness 0.30.
+4. **Species #3: Bronze-Purpura (Delta)**: Vintage Bronze (`#cd7f32`), Violet Glowing Filaments (`#aa00ff`), metallic roughness 0.50.
+
+## Dynamic Visual Effects (VFX)
+- **Synthesis Welding Sparks ($n$)**: Bright spark flash effect when a new truncated octahedron module is welded onto an organism.
+- **Joule Heating Circuit Glow ($I^2 R$)**: Kirchhoff circuit edge glowing warm-orange to white-hot when electrical conduction exceeds nominal threshold.
+- **Thrust Particles**: Bubble trail behind `Out-G` exhaust nozzles during active propulsion.
+- **Decay Disintegration ($m$)**: Dissolving modules disintegrate into glowing golden Materia scrap particles.
 
 ## Module Geometry: Truncated Octahedron (Kelvin Cell)
-Each modular block (Proto-Protein) is shaped as a **Truncated Octahedron** (14 faces: 8 regular hexagons, 6 squares).
-- **Spatial Alignment**: Modules map to a **Body-Centered Cubic (BCC)** spatial lattice.
-- **Docking Ports**: 14 mechanical circular docking ports with glowing central filaments.
-- **Discrete Rotations**: 14 docking face normals:
-  - 6 Square faces: $(\pm 1, 0, 0), (0, \pm 1, 0), (0, 0, \pm 1)$
-  - 8 Hexagon faces: $(\pm 1/\sqrt{3}, \pm 1/\sqrt{3}, \pm 1/\sqrt{3})$
+Each modular block (Proto-Protein) is shaped as a **Truncated Octahedron** (14 faces: 8 regular hexagons, 6 squares) aligned to a **Body-Centered Cubic (BCC)** spatial grid.
 
-## The 7 Proto-Protein Modules
-1. **In-G (Gas Filter)**: Turbine intake drawing atmospheric/aquatic gases.
-2. **In-M (Scrap Magnet)**: Mechanical claw collecting mineral salts & Materia.
-3. **In-I (Antenna/Eye)**: Sensor array detecting resource gradients and external signals.
-4. **Out-G (Exhaust)**: Rocket nozzle providing reactive thrust from gas reactions.
-5. **Out-M (Waste Chute)**: Secretes armor plates, heat dissipation fins, or Materia briquettes.
-6. **Out-I (Signal Lamp)**: Broadcasts vector signals and blueprint vectors to nearby organisms.
-7. **Base Block (Chassis)**: Structural skeleton with minimal maintenance power draw.
-
-## UI & HUD Aesthetics
-- **Analog Gauges**: Brass rims, glass covers, trembling needles indicating `Charge` (Volts) and `Pressure` (Bar).
-- **Diagnostic Blueprint Overlay**: Schematic grid overlay displaying electrical node potentials ($V_i$) and thermal entropy heat spots.
+## UI & HUD Aesthetics (Overseer Spectator Controls)
+- **Cinematic Tracking Camera**: Click any species or select from dropdown to lock camera smoothly onto target.
+- **God Sliders & Buttons**: Speed multiplier ($1\times, 2\times, 4\times$), Gas Storm switcher (G0 $\to$ G--), 2 vs 4 Species toggle.
+- **Doom Clock Header**: Displays Helios-Omega countdown (`2,995,000 Years`) and Ecosystem Harmony Index (`86.2%`).
+- **Local Ollama AI Ticker**: Live real-time species commentary ticker.
